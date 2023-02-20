@@ -1,0 +1,71 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+html {
+  font-size: 12px;
+}
+:root {
+    overflow-y:hidden;
+    overflow-x: hidden;
+}
+
+.hidden-scroll {
+    max-height: 100vh;  
+    padding-bottom: 50px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    overflow-y: auto;
+   
+  }
+  .hidden-scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+  
+
+/* @layer components  {
+    .btn-primary {
+        @apply "bg-primary-400 text-white hover:bg-primary-500 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full text-center";
+    }
+} */
+.btn {
+  @apply font-medium rounded;
+}
+
+.input {
+  @apply rounded;
+}
+
+.activated {
+  fill: aquamarine !important;
+}
+
+.deadEnd {
+  fill: red !important;
+}
+
+.found {
+  fill : green !important;
+  ;
+}
+
+.start {
+  fill: blue !important;
+}
+
+.selected {
+  stroke: green !important;
+  stroke-width: 2 !important;
+}
+
+.selecting {
+  stroke: red !important;
+  stroke-width: 2 !important;
+}
+
+.highlighted {
+  color:red !important;
+}
+p.highlighted {
+  display: inline;
+}
