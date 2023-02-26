@@ -22,7 +22,7 @@ export const runForceGraph = (container, linksData, nodesData, {
     const forceY = d3.forceY().y(d => d.y).strength(0.02);
 
     const simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(d => d.id).strength(d => linkStrengthScale(d.value / 900)))
+        .force("link", d3.forceLink().id(d => d.id).strength(d => linkStrengthScale(d.value / 1000)))
         .force("charge", d3.forceManyBody().strength(-100))
         .force("center", d3.forceCenter())
         .force("x", forceX)
@@ -69,25 +69,6 @@ export const runForceGraph = (container, linksData, nodesData, {
         .attr("dominant-baseline", "central")
         .attr("fill", "black")
         .attr("font-size", "large");
-
-
-        const linkText = svg.append("g")
-  .attr("class", "linkText")
-  .selectAll("text")
-  .data(linksData)
-  .enter().append("text")
-  .attr("class", "linkText")
-  .attr("text-anchor", "middle")
-  .attr("dominant-baseline", "central")
-  .attr("fill", "red")
-  .attr("font-size", "large")
-  .text(d => d.value)
-  .attr("transform", function(d) {
-    return "translate(" + ((d.source.x + d.target.x) / 2) + "," + ((d.source.y + d.target.y) / 2) + ")";
-  });
- 
-
-
     if (graphType == "directed") {
         const marker = svg.append("defs")
             .append("marker")
@@ -102,6 +83,40 @@ export const runForceGraph = (container, linksData, nodesData, {
         marker.append("path")
             .attr("d", "M0,-5L10,0L0,5");
     }
+    // here you can add the weights ^^
+    //code to append values above the links
+    const linkText = svg.append("g")
+        .attr("class", "linkText")
+        .selectAll("text")
+        .data(linksData)
+        .enter().append("text")
+        .attr("class", "linkText")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("fill", "white")
+        .attr("font-size", "large")
+        .text(d => d.value)
+        .attr("x", d => (d.source.x + d.target.x) / 0.5)
+        .attr("y", d => (d.source.y + d.target.y) / 0.5 );
+
+//code to append values above the nodes
+
+    const nodeText1 = svg.append("g")
+        .attr("class", "nodeText2")
+        .selectAll("text")
+        .data(nodesData)
+        .enter().append("text")
+        .attr("class", "nodeText2")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("fill", "red")
+        .attr("font-size", "large")
+        .text(d => d.value)
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .style("z-index", 100);
+
+
 
     function dragstarted(event) {
         if (!event.active) simulation.alphaTarget(1).restart();
@@ -146,8 +161,6 @@ export const runForceGraph = (container, linksData, nodesData, {
             .classed("activated", d => d.active);
         d3.selectAll("g.links line")
             .classed("selected", d => d.selected);
-
-
     });
 
     return {

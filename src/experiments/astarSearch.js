@@ -57,12 +57,13 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
     for (let i = 0; i < noOfNodes; i++) {
         const c = String.fromCharCode(alphaarray[Math.floor(Math.random() * alphaarray.length)]);
 
+
         if (nodes.find(node => node.id === c)) {
             i--;
             continue;
         }
-
-        nodes.push({ id: c });
+        console.log(nodes,"nodes in undirected");
+        nodes.push({ id: c, gOfN : Math.floor(Math.random() * 10) + 1 });
     }
 
     for (let i = 0; i < noOfLinks; i++) {
@@ -79,11 +80,12 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
 
         //code to make the graph undirected eg: if a->b exists then b->a also exists         
         const value = Math.floor(Math.random() * 10) + 1;
-        links.push({ source, target, value: value });
-        links.push({ source: target, target: source, value: value });
+        const hOfN = Math.floor(Math.random() * 10) + 1;
+        links.push({ source, target, value: value, hOfN: hOfN });
+        links.push({ source: target, target: source, value: value, hOfN: hOfN });
         console.log('links in the end',links);
     }
-    console.log(links,"sdchg");
+    console.log(links,"undirected to see if the hofN is there");
     return { nodes, links };
 }
 
@@ -92,7 +94,10 @@ const visitedNode = new Set()
 const path = []
 const speed = 1000
 
-export async function initRandomSearch(nodes, links, startNode, endNode) {
+
+// Random Search Algorithm
+
+export async function initAstarSearch(nodes, links, startNode, endNode) {
     nodes.map(node => node.active = false)
     links.map(link => link.selected = false)
     links.map(link => link.selecting = false)
@@ -106,12 +111,10 @@ export async function initRandomSearch(nodes, links, startNode, endNode) {
     updatefeedBack("End Node : " + endNode + "")
     visitedNode.clear()
     path.length = 0
-    return await randomSearch(nodes, links, startNode, endNode)
+    return await astarSearch(nodes, links, startNode, endNode)
 }
 
-async function randomSearch(nodes, links, startNode, endNode) {
-
-
+async function astarSearch(nodes, links, startNode, endNode) {
     // Initialize an empty path
     if (visitedNode.has(startNode)) {
         updatefeedBack("Already visited node : " + startNode + "")
@@ -141,9 +144,9 @@ async function randomSearch(nodes, links, startNode, endNode) {
     updatefeedBack("Selecting a random link from the available links")
     await new Promise(r => setTimeout(r, speed));
     allAvailableLinks.map(link => link.selecting = false)
-
-
+    
     while (allAvailableLinks.length > 0) {
+        //change code here for a star algorithm
         if(allAvailableLinks.length==1){
             updatefeedBack("Only one link is available and that link is selected")
             await new Promise(r => setTimeout(r, speed));
@@ -171,7 +174,6 @@ async function randomSearch(nodes, links, startNode, endNode) {
         updatefeedBack("No path found")
         return false;
     }
-
     nodes.find(node => node.id == startNode).active = false
     updatefeedBack("Backtracking to node : <p class='highlighted'>" + path[path.length - 2] + "</p>")
     path.pop()
@@ -179,3 +181,4 @@ async function randomSearch(nodes, links, startNode, endNode) {
     return false;
 }
 
+// 

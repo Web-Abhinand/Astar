@@ -1,7 +1,7 @@
 import React from "react";
 import D3Container from "../components/d3Container";
 import ControlPanel from "../pages/contolPanel";
-import { generateDirectedNodesAndLinks, generateUndirectedNodesAndLinks } from "../experiments/randomSearch";
+import { generateDirectedNodesAndLinks, generateUndirectedNodesAndLinks } from "../experiments/astarSearch";
 
 export default function Playground() {
 

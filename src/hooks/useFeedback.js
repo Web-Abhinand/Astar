@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { feedbackDetails } from "../experiments/randomSearch";
+import { feedbackDetails } from "../experiments/astarSearch";
 // Custom hook
 const useFeedback = () => {
     const [feedback, setFeedback] = useState([]);
