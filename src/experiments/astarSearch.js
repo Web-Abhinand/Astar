@@ -1,3 +1,4 @@
+import { current } from "daisyui/src/colors";
 
 const event = new CustomEvent('randomSearch')
 export const feedbackDetails = [];
@@ -86,6 +87,7 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
         console.log('links in the end',links);
     }
     console.log(links,"undirected to see if the hofN is there");
+    console.log(nodes,"nodes in undirected to see if the gOfN is there");
     return { nodes, links };
 }
 
@@ -116,23 +118,6 @@ export async function initAstarSearch(nodes, links, startNode, endNode) {
 
 async function astarSearch(nodes, links, startNode, endNode) {
     // Initialize an empty path
-    if (visitedNode.has(startNode)) {
-        updatefeedBack("Already visited node : " + startNode + "")
-        await new Promise(r => setTimeout(r, speed));
-        updatefeedBack("Backtracking to node : " + path[path.length - 1] + "")
-        await new Promise(r => setTimeout(r, speed));
-        return false;
-    }
-    path.push(startNode)
-    if (startNode == endNode) {
-        updatefeedBack("Target Node Found : " + endNode + "")
-        nodes.find(node => node.id == endNode).targetNode = true
-        await new Promise(r => setTimeout(r, speed));
-        updatefeedBack("The path is : <p class='highlighted'>" + path + "</p>")
-        return true;
-    }
-    visitedNode.add(startNode)
-
     nodes.find(node => node.id == startNode).active = true
     //Selecting all the links that are available from the current node
     updatefeedBack("Selecting all the links that are available from the current node : <p class='highlighted'>" + startNode + "</p>")
@@ -141,31 +126,30 @@ async function astarSearch(nodes, links, startNode, endNode) {
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack("All the links that are available from the current node : " + startNode + " are : <p class='highlighted'>" + allAvailableLinks.map(link => link.target.id) + "</p>")
     await new Promise(r => setTimeout(r, speed));
-    updatefeedBack("Selecting a random link from the available links")
+    updatefeedBack("Selecting a link from the available links based on the heuristic function")
     await new Promise(r => setTimeout(r, speed));
-    allAvailableLinks.map(link => link.selecting = false)
-    
-    while (allAvailableLinks.length > 0) {
-        //change code here for a star algorithm
-        if(allAvailableLinks.length==1){
-            updatefeedBack("Only one link is available and that link is selected")
+    let openList = [startNode];
+    let closedList = [];
+    let fscore = {};
+    fscore[startNode] = nodes.find(node => node.id == startNode).gOfN + links.find(link => link.source.id == startNode).hOfN;
+    while(openList.length > 0) {
+        //code to find the node with the lowest fscore
+        const current = openList.reduce((acc,node)=> fscore[node] < fscore[acc] ? node : acc, openList[0]);
+        if(current == endNode) {
+            updatefeedBack("Target Node Found : " + endNode + ""+fscore[current]+"is the f(n)")
+            nodes.find(node => node.id == endNode).targetNode = true
             await new Promise(r => setTimeout(r, speed));
+            updatefeedBack("The path is : <p class='highlighted'>" + path + "</p>")
+            openList.pop();
+            return true;
         }
-        const randomIndex = Math.floor(Math.random() * (allAvailableLinks.length - 0) + 0)
-        const selectedLink = allAvailableLinks[randomIndex]
-        selectedLink.selected = true
-        updatefeedBack("Selected Link : <p class='highlighted'>" + selectedLink.source.id + " -> " + selectedLink.target.id + "</p>")
-        await new Promise(r => setTimeout(r, speed));
-        updatefeedBack("Checking if the target node of the selected link is the target node")
-        await new Promise(r => setTimeout(r, speed));
-        if (await randomSearch(nodes, links, selectedLink.target.id, endNode)) {
-            console.log("Path Found")
-            return path;
-        }
-        // MADE CHANGE HERE the selected link to true
-        selectedLink.selected = true
-        allAvailableLinks.splice(randomIndex, 1)
-    }
+    }    
+    allAvailableLinks.map(link => link.selecting = false) 
+
+
+
+
+
     // Dead End
     updatefeedBack("No path found from node : " + startNode + "")
     await new Promise(r => setTimeout(r, speed));
