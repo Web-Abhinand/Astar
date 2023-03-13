@@ -53,12 +53,12 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             return;
         }
         let newNoOfNodesAndLinks = { noOfNodes: noOfNodesAndLinks.noOfNodes, noOfLinks: noOfNodesAndLinks.noOfLinks };
-        if (parseInt(newNoOfNodesAndLinks.noOfNodes) <= parseInt(newNoOfNodesAndLinks.noOfLinks)) {
-            console.log(newNoOfNodesAndLinks.noOfNodes);
-            console.log(newNoOfNodesAndLinks.noOfLinks);
-            setError({ state: true, message: 'No of nodes should be greater than no of links' });
-            return;
-        }
+        // if (parseInt(newNoOfNodesAndLinks.noOfNodes) >= parseInt(newNoOfNodesAndLinks.noOfLinks)) {
+        //     console.log(newNoOfNodesAndLinks.noOfNodes);
+        //     console.log(newNoOfNodesAndLinks.noOfLinks);
+        //     setError({ state: true, message: 'No of nodes should be greater than no of links' });
+        //     return;
+        // }
         setError({ state: false, message: '' });
         setNoOfNodesAndLinks(newNoOfNodesAndLinks);
         changeGraph(noOfNodesAndLinks.noOfNodes, noOfNodesAndLinks.noOfLinks)
@@ -124,18 +124,18 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                     (event) => {
                         const newValue = parseInt(event.target.value);
                         setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfNodes: newValue });
-                        if (newValue > 100) {
-                            setError({ state: true, message: 'No of nodes should be less than 100' });
-                            return;
-                        }
-                        if (newValue < noOfNodesAndLinks.noOfLinks) {
-                            setError({ state: true, message: 'No of nodes should be greater than no of links' });
-                            return;
-                        }
-                        if (newValue < 100 && newValue > noOfNodesAndLinks.noOfLinks) {
-                            setError({ state: false, message: '' });
-                            return;
-                        }
+                        // if (newValue > 100) {
+                        //     setError({ state: true, message: 'No of nodes should be less than 100' });
+                        //     return;
+                        // }
+                        // if (newValue >= noOfNodesAndLinks.noOfLinks) {
+                        //     setError({ state: true, message: 'No of nodes should be greater than no of links' });
+                        //     return;
+                        // }
+                        // if (newValue < 100 && newValue >= noOfNodesAndLinks.noOfLinks) {
+                        //     setError({ state: false, message: '' });
+                        //     return;
+                        // }
                         //code to display error message when something other than number is entered
                         if (isNaN(newValue)) {
                             setError({ state: true, message: 'No of nodes should be a number' });
@@ -150,18 +150,18 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                     (event) => {
                         const newValue = parseInt(event.target.value);
                         setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfLinks: newValue });
-                        if (newValue > noOfNodesAndLinks.noOfNodes) {
-                            setError({ state: true, message: 'No of links should be less than no of nodes' });
-                            return;
-                        }
-                        if (newValue > 100) {
-                            setError({ state: true, message: 'No of links should be less than 100' });
-                            return;
-                        }
-                        if (newValue < 100 && newValue < noOfNodesAndLinks.noOfNodes) {
-                            setError({ state: false, message: '' });
-                            return;
-                        }
+                        // if (newValue >= noOfNodesAndLinks.noOfNodes) {
+                        //     setError({ state: true, message: 'No of links should be less than no of nodes' });
+                        //     return;
+                        // }
+                        // if (newValue > 100) {
+                        //     setError({ state: true, message: 'No of links should be less than 100' });
+                        //     return;
+                        // }
+                        // if (newValue < 100 && newValue <= noOfNodesAndLinks.noOfNodes) {
+                        //     setError({ state: false, message: '' });
+                        //     return;
+                        // }
                     }
                 } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Links" id="noOfLinks" />
             </div>

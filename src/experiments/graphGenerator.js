@@ -10,6 +10,7 @@ export const runForceGraph = (container, linksData, nodesData, {
         container.innerHTML = "";
     }
     console.log(linksData,'linksData');
+    var digits=['0','1','2','3','4','5','6','7','8','9'];
     const containerRect = container.getBoundingClientRect();
     const height = containerRect.height;
     const width = containerRect.width;
@@ -99,22 +100,21 @@ export const runForceGraph = (container, linksData, nodesData, {
         .attr("x", d => (d.source.x + d.target.x) / 0.5)
         .attr("y", d => (d.source.y + d.target.y) / 0.5 );
 
-//code to append values above the nodes
+//code to append text above the nodes
+    // const nodeText = svg.append("g")
+    //     .attr("class", "nodeText")
+    //     .selectAll("text")
+    //     .data(nodesData)
+    //     .enter().append("text")
+    //     .attr("class", "nodeText")
+    //     .attr("text-anchor", "middle")
+    //     .attr("dominant-baseline", "central")
+    //     .attr("fill", "white")
+    //     .attr("font-size", "large")
+    //     .text(d => d.id)
+    //     .attr("x", d => d.x)
+    //     .attr("y", d => d.y);
 
-    const nodeText1 = svg.append("g")
-        .attr("class", "nodeText2")
-        .selectAll("text")
-        .data(nodesData)
-        .enter().append("text")
-        .attr("class", "nodeText2")
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "central")
-        .attr("fill", "red")
-        .attr("font-size", "large")
-        .text(d => d.value)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .style("z-index", 100);
 
 
 

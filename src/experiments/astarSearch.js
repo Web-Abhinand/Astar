@@ -1,5 +1,6 @@
 import { current } from "daisyui/src/colors";
 
+
 const event = new CustomEvent('randomSearch')
 export const feedbackDetails = [];
 
@@ -64,7 +65,7 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
             continue;
         }
         console.log(nodes,"nodes in undirected");
-        nodes.push({ id: c, gOfN : Math.floor(Math.random() * 10) + 1 });
+        nodes.push({ id: c, hOfN : Math.floor(Math.random() * 10) + 1 });
     }
 
     for (let i = 0; i < noOfLinks; i++) {
@@ -81,9 +82,9 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
 
         //code to make the graph undirected eg: if a->b exists then b->a also exists         
         const value = Math.floor(Math.random() * 10) + 1;
-        const hOfN = Math.floor(Math.random() * 10) + 1;
-        links.push({ source, target, value: value, hOfN: hOfN });
-        links.push({ source: target, target: source, value: value, hOfN: hOfN });
+        const gOfN = Math.floor(Math.random() * 10) + 1;
+        links.push({ source, target, value: value, gOfN: gOfN });
+        links.push({ source: target, target: source, value: value, gOfN: gOfN });
         console.log('links in the end',links);
     }
     console.log(links,"undirected to see if the hofN is there");
@@ -128,27 +129,95 @@ async function astarSearch(nodes, links, startNode, endNode) {
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack("Selecting a link from the available links based on the heuristic function")
     await new Promise(r => setTimeout(r, speed));
-    let openList = [startNode];
+
+
+
+
+    let openList = [];
     let closedList = [];
-    let fscore = {};
-    fscore[startNode] = nodes.find(node => node.id == startNode).gOfN + links.find(link => link.source.id == startNode).hOfN;
+    let fscore = new Map();
+    console.log(startNode,'startNode');
+    openList.push(startNode);
+    let gOfNS=[];
+    let sumofgOfNS;
+    
+    
+
     while(openList.length > 0) {
-        //code to find the node with the lowest fscore
-        const current = openList.reduce((acc,node)=> fscore[node] < fscore[acc] ? node : acc, openList[0]);
-        if(current == endNode) {
-            updatefeedBack("Target Node Found : " + endNode + ""+fscore[current]+"is the f(n)")
-            nodes.find(node => node.id == endNode).targetNode = true
-            await new Promise(r => setTimeout(r, speed));
-            updatefeedBack("The path is : <p class='highlighted'>" + path + "</p>")
-            openList.pop();
-            return true;
+        console.log(links,'links');
+        console.log(nodes,'nodes');
+        //code to find sum of elements of gOfNS
+        sumofgOfNS = gOfNS.reduce((a, b) => a + b, 0);
+        console.log(sumofgOfNS,'sumofgOfNS');
+
+        //current has start node @ first iteration
+        let current = openList[0];
+        console.log(current,'current');
+
+        //CODE to check if the current node is the end node
+        if (current == endNode||closedList.includes(endNode)||openList.includes(endNode)) {
+            closedList.push(current);
+            console.log("found",closedList);
+            return;
         }
+
+        //find all the neighbours of the current node
+        const neighbours= links.filter( link => link.source.id == current&&(!closedList.includes(link.target.id)));
+        console.log(neighbours,'neighbours');
+
+
+
+        //find the f score of all the neighbours
+        for (let i = 0; i < neighbours.length; i++) {
+            fscore.set(neighbours[i].target.id, neighbours[i].gOfN + neighbours[i].target.hOfN + sumofgOfNS);
+        }
+
+        
+        
+        fscore.forEach((value, key) => {
+            console.log(key, value);
+        });
+
+        if(neighbours.includes(endNode)){
+            console.log("found",closedList);
+            return;1
+        }
+
+        //find the node with the lowest f score and make it the current node
+        let lowest = -1;
+        current = "";
+        fscore.forEach((value, key) => {
+            if ((lowest == -1 || value < lowest) && !(closedList.includes(key))) {
+                lowest = value;
+                current = key;
+            }
+        });
+        nodes.find(node => node.id == current).active = true
+        await new Promise(r => setTimeout(r, speed));
+
+        console.log(current,'current');
+
+        //pushing the gOfN of the current node to the gOfNS array
+        gOfNS.push((links.find(link => link.target.id == current)).gOfN);
+        console.log(gOfNS,'gOfNS');
+
+
+        lowest = -1;
+        // closedList=openList.pop();
+
+        openList.push(current);
+
+        //pushing the first element of openList to closedList
+        if (openList.length > 0) {
+            closedList.push(openList.shift());
+          }
+
+
+        //final path
+        console.log(closedList,'final path');
     }    
+
     allAvailableLinks.map(link => link.selecting = false) 
-
-
-
-
 
     // Dead End
     updatefeedBack("No path found from node : " + startNode + "")
@@ -165,4 +234,4 @@ async function astarSearch(nodes, links, startNode, endNode) {
     return false;
 }
 
-// 
+//  
