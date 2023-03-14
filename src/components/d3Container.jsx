@@ -3,7 +3,7 @@ import { runForceGraph } from "../experiments/graphGenerator";
 import { generateUndirectedNodesAndLinks } from "../experiments/astarSearch";
 
 
-const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual }) => {
+const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual,noOfNodesAndLinks,setNoOfNodesAndLinks}) => {
     const containerRef = useRef(null);
     let changePointer;
 
@@ -24,15 +24,20 @@ const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual }) => {
                 }
             );
         }
-        let k = generateUndirectedNodesAndLinks();
-        console.log(k, "k");
-
     }, [nodesAndLinks]);
+    var nodelinks = generateUndirectedNodesAndLinks(noOfNodesAndLinks.noOfNodes, noOfNodesAndLinks.noOfLinks);
+    console.log(nodelinks, "nodelinks");
     
 
     return (
         <>
-            <div style={{padding:'0.5rem'}}><h1 style={{textAlign:'center',fontSize:'2rem'}}>{}</h1></div>
+            <div style={{padding:'0.5rem'}}><h1 style={{textAlign:'center',fontSize:'2rem'}}></h1>
+                {nodelinks.nodes.map((node, index) => {return(
+                    <div key={index} style={{display:'flex',justifyContent:'space-between',alignItems:'center',margin:'0.5rem'}}>
+                        {node.hOfN}
+                    </div>
+                )})}
+            </div>
             <div ref={containerRef} className="h-full" />
         </>
         );

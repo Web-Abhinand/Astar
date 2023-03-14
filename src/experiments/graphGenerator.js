@@ -86,6 +86,8 @@ export const runForceGraph = (container, linksData, nodesData, {
     }
     // here you can add the weights ^^
     //code to append values above the links
+
+
     const linkText = svg.append("g")
         .attr("class", "linkText")
         .selectAll("text")
@@ -96,9 +98,12 @@ export const runForceGraph = (container, linksData, nodesData, {
         .attr("dominant-baseline", "central")
         .attr("fill", "white")
         .attr("font-size", "large")
-        .text(d => d.value)
+        .text(d => d.gOfN)
+        .style("pointer-events", "none")
         .attr("x", d => (d.source.x + d.target.x) / 0.5)
         .attr("y", d => (d.source.y + d.target.y) / 0.5 );
+
+
 
 //code to append text above the nodes
     // const nodeText = svg.append("g")

@@ -1,6 +1,7 @@
 import React from "react";
 import D3Container from "../components/d3Container";
 import ControlPanel from "../pages/contolPanel";
+import { useState } from "react";
 import { generateDirectedNodesAndLinks, generateUndirectedNodesAndLinks } from "../experiments/astarSearch";
 
 export default function Playground() {
@@ -19,12 +20,13 @@ export default function Playground() {
         setNodesAndLinks(e ? generateUndirectedNodesAndLinks(10, 10,manual) : generateDirectedNodesAndLinks(10, 10,manual));
         setGraphChoice(e);
     }
+    const [noOfNodesAndLinks, setNoOfNodesAndLinks] = useState({ noOfNodes: 0, noOfLinks: 0 });
 
     return (
         <>
-            <ControlPanel manual={manual} setManual={setManual} nodesAndLinks={nodesAndLinks} changeGraphType={changeGraphType} changeGraph={changeGraph} setNodesAndLinks={setNodesAndLinks}></ControlPanel>
+            <ControlPanel manual={manual} setManual={setManual} nodesAndLinks={nodesAndLinks} changeGraphType={changeGraphType} changeGraph={changeGraph} setNodesAndLinks={setNodesAndLinks} noOfNodesAndLinks={noOfNodesAndLinks} setNoOfNodesAndLinks={setNoOfNodesAndLinks}></ControlPanel>
             <div className="sm:w-2/3  h-screen">
-                <D3Container manual={manual} setManual={setManual} graphType={graphChoice} nodesAndLinks={nodesAndLinks} />
+                <D3Container manual={manual} setManual={setManual} graphType={graphChoice} nodesAndLinks={nodesAndLinks} noOfNodesAndLinks={noOfNodesAndLinks} setNoOfNodesAndLinks={setNoOfNodesAndLinks}/>
             </div>
         </>
     );

@@ -158,6 +158,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         if (current == endNode||closedList.includes(endNode)||openList.includes(endNode)) {
             closedList.push(current);
             console.log("found",closedList);
+            updatefeedBack("path" + closedList[0] + " -> " + closedList[1] + closedList[2]+"</p>")
             return;
         }
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { generateDirectedNodesAndLinks } from '../experiments/astarSearch';
 import { generateUndirectedNodesAndLinks } from '../experiments/astarSearch';
 
-export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks }) {
+export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks, noOfNodesAndLinks, setNoOfNodesAndLinks }) {
 
     const [targetNode, setTargetNode] = useState('');
     const [sourceNode, setSourceNode] = useState('');
@@ -18,7 +18,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         state: false,
         message: ''
     });
-    const [noOfNodesAndLinks, setNoOfNodesAndLinks] = useState({ noOfNodes: 0, noOfLinks: 0 });
+
 
 
     const handleSourceChange = (e) => {
