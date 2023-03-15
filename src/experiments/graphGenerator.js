@@ -58,7 +58,7 @@ const linkLabels = linkGroup.append("text")
   .text(d => d.gOfN)
   .attr("text-anchor", "middle")
   .attr("dominant-baseline", "central")
-  .attr("fill", "blue")
+  .attr("fill", "white")
   .attr("font-size", "large")
   .attr("x", d => (d.source.x + d.target.x) / 2)
   .attr("y", d => (d.source.y + d.target.y) / 2);

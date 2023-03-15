@@ -34,7 +34,7 @@ const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual,noOfNodesAndLink
             <div style={{padding:'0.5rem'}}><h1 style={{textAlign:'center',fontSize:'2rem'}}></h1>
                 {nodelinks.nodes.map((node, index) => {return(
                     <div key={index} style={{display:'flex',justifyContent:'space-between',alignItems:'center',margin:'0.5rem'}}>
-                        {node.hOfN}
+                        {/* {node.hOfN} */}
                     </div>
                 )})}
             </div>
