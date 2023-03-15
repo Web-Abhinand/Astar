@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { text } from 'd3';
 
 export const runForceGraph = (container, linksData, nodesData, {
     color,
@@ -41,14 +42,27 @@ export const runForceGraph = (container, linksData, nodesData, {
         }));
 
 
-    const link = svg.append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(linksData)
-        .enter().append("line")
-        .attr("stroke-width", 1.5) // Use the value property to set the stroke width
-        .attr("marker-end", "url(#arrowhead)")
-        .attr("stroke", "white");
+        const linkGroup = svg.append("g")
+  .attr("class", "links")
+  .selectAll("g")
+  .data(linksData)
+  .enter()
+  .append("g");
+
+const link = linkGroup.append("line")
+  .attr("stroke-width", 1.5)
+  .attr("marker-end", "url(#arrowhead)")
+  .attr("stroke", "white");
+
+const linkLabels = linkGroup.append("text")
+  .text(d => d.gOfN)
+  .attr("text-anchor", "middle")
+  .attr("dominant-baseline", "central")
+  .attr("fill", "blue")
+  .attr("font-size", "large")
+  .attr("x", d => (d.source.x + d.target.x) / 2)
+  .attr("y", d => (d.source.y + d.target.y) / 2);
+
 
     const node = svg.append("g")
         .attr("class", "nodes")
@@ -64,8 +78,9 @@ export const runForceGraph = (container, linksData, nodesData, {
     node.append("circle")
         .attr("r", radius);
 
+
     node.append("text")
-        .text(d => d.id)
+        .text(d => d.id+"  h"+d.hOfN)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("fill", "black")
@@ -84,41 +99,12 @@ export const runForceGraph = (container, linksData, nodesData, {
         marker.append("path")
             .attr("d", "M0,-5L10,0L0,5");
     }
-    // here you can add the weights ^^
-    //code to append values above the links
 
-
-    const linkText = svg.append("g")
-        .attr("class", "linkText")
-        .selectAll("text")
-        .data(linksData)
-        .enter().append("text")
-        .attr("class", "linkText")
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "central")
-        .attr("fill", "white")
-        .attr("font-size", "large")
-        .text(d => d.gOfN)
-        .style("pointer-events", "none")
-        .attr("x", d => (d.source.x + d.target.x) / 0.5)
-        .attr("y", d => (d.source.y + d.target.y) / 0.5 );
 
 
 
 //code to append text above the nodes
-    // const nodeText = svg.append("g")
-    //     .attr("class", "nodeText")
-    //     .selectAll("text")
-    //     .data(nodesData)
-    //     .enter().append("text")
-    //     .attr("class", "nodeText")
-    //     .attr("text-anchor", "middle")
-    //     .attr("dominant-baseline", "central")
-    //     .attr("fill", "white")
-    //     .attr("font-size", "large")
-    //     .text(d => d.id)
-    //     .attr("x", d => d.x)
-    //     .attr("y", d => d.y);
+
 
 
 
@@ -142,6 +128,8 @@ export const runForceGraph = (container, linksData, nodesData, {
 
     simulation.on("tick", () => {
         simulation.alpha(0.5);
+        
+
 
         link
             .attr("x1", function (d) { return d.source.x; })
@@ -153,6 +141,14 @@ export const runForceGraph = (container, linksData, nodesData, {
             .attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
+
+            link.attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+        
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+                  .attr("y", d => (d.source.y + d.target.y) / 2 - 10);
 
         d3.selectAll("g.links line")
             .classed("selecting", d => d.selecting);

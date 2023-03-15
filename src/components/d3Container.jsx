@@ -19,7 +19,7 @@ const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual,noOfNodesAndLink
                 nodesAndLinks.nodes,
                 {
                     color: "#808080",
-                    radius: 26,
+                    radius: 30,
                     graphType: graphType ? "undirected" : "directed",
                 }
             );

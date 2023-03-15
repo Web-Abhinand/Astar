@@ -14,7 +14,7 @@ export default function FeedbackComponent() {
     return (
         <div className="p-5 bg-base-100 m-4 shadow-sm shadow-gray-700 tracking-widest" style={{ overflowY: 'scroll', height: '300px' }} ref={divRef}>
             {/* <h1 style={{fontSize:'1.8rem'}}>Feedback</h1> */}
-            <Accordion title="Random Search Iterations">
+            <Accordion title="A star Iterations">
                 {feedbackDetails.map((feedback, index) => {
                     return (
                         <div key={index}>
