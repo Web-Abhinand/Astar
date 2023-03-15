@@ -30,7 +30,7 @@ export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manu
             continue;
         }
 
-        nodes.push({ id: c });
+        nodes.push({ id: c,hOfN : Math.floor(Math.random() * 10) + 1 });
 
     }
 
