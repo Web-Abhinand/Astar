@@ -1,3 +1,4 @@
+import { link } from "d3";
 import { current } from "daisyui/src/colors";
 
 
@@ -18,8 +19,7 @@ const alphaarray = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 
 
 
 export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manual,sourceNode,targetNode) {
-    console.log(manual,"manual");
-    console.log(noOfNodes,"noOfNodes-Directed");
+  
     let nodes = [];
     let links = [];
     for (let i = 0; i < noOfNodes; i++) {
@@ -44,15 +44,18 @@ export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manu
             i--;
             continue;
         }
-        links.push({ source, target, value: Math.floor(Math.random() * 10) + 1 });
+        const gOfN = Math.floor(Math.random() * 10) + 1;
+        
+        links.push({ source, target, value: Math.floor(Math.random() * 10) + 1, 
+        gOfN: gOfN});
     }
-    console.log(links,"directed");
+    
 
     return { nodes, links };
 
 }
 
-export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,manual,sourceNode,targetNode) {
+export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,sourceNode,targetNode) {
     let nodes = [];
     let links = [];
 
@@ -64,13 +67,11 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
             i--;
             continue;
         }
-        console.log(nodes,"nodes in undirected");
+        
         nodes.push({ id: c, hOfN : Math.floor(Math.random() * 10) + 1 });
     }
 
     for (let i = 0; i < noOfLinks; i++) {
-        console.log(Math.floor(Math.random() * nodes.length));
-        console.log(nodes[0].id,"nodes");
         const source = nodes[Math.floor(Math.random() * nodes.length)].id;
         const target = nodes[Math.floor(Math.random() * nodes.length)].id;
 
@@ -85,10 +86,7 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,ma
         const gOfN = Math.floor(Math.random() * 10) + 1;
         links.push({ source, target, value: value, gOfN: gOfN });
         links.push({ source: target, target: source, value: value, gOfN: gOfN });
-        console.log('links in the end',links);
     }
-    console.log(links,"undirected to see if the hofN is there");
-    console.log(nodes,"nodes in undirected to see if the gOfN is there");
     return { nodes, links };
 }
 
@@ -123,7 +121,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
     //Selecting all the links that are available from the current node
     updatefeedBack("Selecting all the links that are available from the current node : <p class='highlighted'>" + startNode + "</p>")
     const allAvailableLinks = await links.filter(link => link.source.id == startNode)
-    allAvailableLinks.map(link => link.selecting = true)
+    allAvailableLinks.map(link => link.selecting = false)
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack("All the links that are available from the current node : " + startNode + " are : <p class='highlighted'>" + allAvailableLinks.map(link => link.target.id) + "</p>")
     await new Promise(r => setTimeout(r, speed));
@@ -136,12 +134,30 @@ async function astarSearch(nodes, links, startNode, endNode) {
     let openList = [];
     let closedList = [];
     let fscore = new Map();
-    console.log(startNode,'startNode');
     openList.push(startNode);
     let gOfNS=[];
     let sumofgOfNS;
+    let bcurrent = "";
+    let bfscore = new Map();
+    let bneighbours = [];
+    bneighbours= links.filter( link => link.target.id == startNode);
+    for(let i=0;i<bneighbours.length;i++){
+        bfscore.set(bneighbours[i].source.id, bneighbours[i].gOfN + bneighbours[i].source.hOfN);
+    }
+
+    let blowest = -1;
+        bcurrent = "";
+        bfscore.forEach((value, key) => {
+            if ((blowest == -1 || value < blowest)) {
+                blowest = value;
+                bcurrent = key;               
+            }
+        });
+        
+    gOfNS.push(bneighbours.find(link => link.source.id == bcurrent).gOfN);
+    console.log(bcurrent,'bcurrent');
     
-    
+    let Flag=0;
 
     while(openList.length > 0) {
         console.log(links,'links');
@@ -155,65 +171,92 @@ async function astarSearch(nodes, links, startNode, endNode) {
         console.log(current,'current');
 
         //CODE to check if the current node is the end node
-        if (current == endNode||closedList.includes(endNode)||openList.includes(endNode)) {
+        if (current == endNode) {
             closedList.push(current);
+            nodes.find(node => node.id == current).targetNode = true
             console.log("found",closedList);
-            updatefeedBack("path" + closedList[0] + " -> " + closedList[1] + closedList[2]+"</p>")
             return;
         }
 
-        //find all the neighbours of the current node
-        const neighbours= links.filter( link => link.source.id == current&&(!closedList.includes(link.target.id)));
+        //code to find the neighbours of the current node
+        const neighbours= links.filter( link => link.target.id == current&&(!closedList.includes(link.source.id)));
+
         console.log(neighbours,'neighbours');
 
 
 
         //find the f score of all the neighbours
         for (let i = 0; i < neighbours.length; i++) {
-            fscore.set(neighbours[i].target.id, neighbours[i].gOfN + neighbours[i].target.hOfN + sumofgOfNS);
-        }
+            if(Flag==0){
+                if(!closedList.includes(neighbours[i].target.id)){
+                    fscore.set(neighbours[i].source.id, neighbours[i].gOfN + neighbours[i].source.hOfN + 0);
+                }
+            }
+            else{
+                if(!closedList.includes(neighbours[i].target.id)){
+                    fscore.set(neighbours[i].source.id, neighbours[i].gOfN + neighbours[i].source.hOfN + sumofgOfNS);
+                }
+            }
+            //code to find the f score of the neighbours in closed list
 
-        
-        
+        }
+    
         fscore.forEach((value, key) => {
             console.log(key, value);
         });
-
+        
         if(neighbours.includes(endNode)){
             console.log("found",closedList);
-            return;1
+            return;
+        }
+
+        await new Promise(r => setTimeout(r, speed));
+
+        //pushing the gOfN of the current node to the gOfNS array and make
+        let pgOfN=links.filter(link=>link.target.id==current&&(!closedList.includes(link.target.id)));
+        console.log(pgOfN,'pgOfN');
+        if(Flag!=0){
+            gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==current).gOfN));
+            console.log(gOfNS,'gOfNS');
         }
 
         //find the node with the lowest f score and make it the current node
         let lowest = -1;
         current = "";
         fscore.forEach((value, key) => {
-            if ((lowest == -1 || value < lowest) && !(closedList.includes(key))) {
+            if ((lowest == -1 || value < lowest) && !(closedList.includes(key))&&(nodes.find(node => node.id !=current))) {
                 lowest = value;
-                current = key;
+                current = key; 
+                nodes.find(node => node.id == current).active = true
+                console.log(current,'current in fscore');               
             }
         });
-        nodes.find(node => node.id == current).active = true
-        await new Promise(r => setTimeout(r, speed));
 
-        console.log(current,'current');
-
-        //pushing the gOfN of the current node to the gOfNS array
-        gOfNS.push((links.find(link => link.target.id == current)).gOfN);
-        console.log(gOfNS,'gOfNS');
-
-
-        lowest = -1;
-        // closedList=openList.pop();
-
+        fscore.clear();
+        
         openList.push(current);
-
         //pushing the first element of openList to closedList
         if (openList.length > 0) {
             closedList.push(openList.shift());
           }
 
 
+            // links.find(link => link.target.id == current).selected = true
+            console.log(gOfNS,'gOfNS');
+        
+
+        await new Promise(r => setTimeout(r, speed));
+
+        console.log(current,'current');
+
+        lowest = -1;
+        // closedList=openList.pop();
+
+        
+
+
+
+        Flag=Flag+1;
         //final path
         console.log(closedList,'final path');
     }    
