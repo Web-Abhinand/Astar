@@ -193,12 +193,12 @@ async function astarSearch(nodes, links, startNode, endNode) {
         for (let i = 0; i < neighbours.length; i++) {
             if(Flag==0){
                 if(!closedList.includes(neighbours[i].target.id)){
-                    fscore.set(neighbours[i].source.id, neighbours[i].gOfN + neighbours[i].source.hOfN + 0);
+                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + sumofgOfNS);
                 }
             }
             else{
                 if(!closedList.includes(neighbours[i].target.id)){
-                    fscore.set(neighbours[i].source.id, neighbours[i].gOfN + neighbours[i].source.hOfN + sumofgOfNS);
+                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + sumofgOfNS);
                 }
             }
             //code to find the f score of the neighbours in closed list
