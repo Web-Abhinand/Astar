@@ -242,17 +242,18 @@ async function astarSearch(nodes, links, startNode, endNode) {
         //FIND THE NEW PFSCORE BASED OF THE CURRENT NODE AND SELECT THE LOWEST LINKS GOFN 
         //AND PUSH IT TO THE GOFNS ARRAY
 
-        cneighbours = links.filter(link => link.target.id === current && !closedList.includes(link.target.id));
+        cneighbours = links.filter(link => link.target.id === current && !closedList.includes(link.source.id));
+        console.log(cneighbours,'cneighbours');
 
         for (let i = 0; i < cneighbours.length; i++) {
             if(Flag==0){
                 if(!closedList.includes(cneighbours[i].target.id)){
-                    cfscore.set(cneighbours[i].source.id, cneighbours[i].gOfN + cneighbours[i].source.hOfN + 0);
+                    cfscore.set(cneighbours[i].source.id,cneighbours[i].source.hOfN + cneighbours[i].gOfN);
                 }
             }
             else{
                 if(!closedList.includes(cneighbours[i].target.id)){
-                    cfscore.set(cneighbours[i].source.id, cneighbours[i].gOfN + cneighbours[i].source.hOfN + sumofgOfNS);
+                    cfscore.set(cneighbours[i].source.id,cneighbours[i].source.hOfN + cneighbours[i].gOfN);
                 }
             }
         }
@@ -260,18 +261,23 @@ async function astarSearch(nodes, links, startNode, endNode) {
         clowest = -1;
         ccurrent = "";
         cfscore.forEach((value, key) => {
-            if ((clowest == -1 || value < clowest) && !(closedList.includes(key))&&(nodes.find(node => node.id !=ccurrent))) {
-                clowest = value;
-                ccurrent = key;             
+            console.log(closedList,'closedList');
+            if ((clowest == -1 || value < clowest)&& nodes.find(node => node.id != ccurrent)) {
+                if(!closedList.includes(key)){
+                    console.log(key,'key');
+                    console.log(value,'value');
+                    clowest = value;
+                    ccurrent = key;
+                }            
             }
         });
         cfscore.clear();
         
         if(ccurrent!=endNode){
-        let pgOfN=links.filter(link=>link.target.id==ccurrent&&!closedList.includes(link.target.id));
-        console.log(pgOfN,'pgOfN');
-        gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent).gOfN));
-        console.log(gOfNS,'gOfNS');
+        let pgOfN=links.filter(link=>link.target.id==ccurrent&&link.source.id==current&&!closedList.includes(links=>links.target.id));
+            console.log(pgOfN,'pgOfN');
+            gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent&&pgOf.source.id==current).gOfN));
+            console.log(gOfNS,'gOfNS');
         }
 
         if(openList.includes(current)){
