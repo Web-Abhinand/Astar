@@ -1,5 +1,6 @@
 import { link } from "d3";
 import { current } from "daisyui/src/colors";
+import { Node } from "postcss";
 
 
 const event = new CustomEvent('randomSearch')
@@ -131,6 +132,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
 
 
 
+    nodes.find(node => node.id == endNode).hOfN = 0
     let openList = [];
     let closedList = [];
     let fscore = new Map();
@@ -156,10 +158,15 @@ async function astarSearch(nodes, links, startNode, endNode) {
         
     gOfNS.push(bneighbours.find(link => link.source.id == bcurrent).gOfN);
     console.log(bcurrent,'bcurrent');
-    
+
+    let cfscore = new Map();
+    let cneighbours = [];
+    let clowest;
+    let ccurrent;
     let Flag=0;
 
     while(openList.length > 0) {
+        nodes.find(node => node.id == endNode).hOfN = 0;
         console.log(links,'links');
         console.log(nodes,'nodes');
         //code to find sum of elements of gOfNS
@@ -170,16 +177,13 @@ async function astarSearch(nodes, links, startNode, endNode) {
         let current = openList[0];
         console.log(current,'current');
 
-        //CODE to check if the current node is the end node
-        if (current == endNode) {
-            closedList.push(current);
-            nodes.find(node => node.id == current).targetNode = true
-            console.log("found",closedList);
-            return;
-        }
+        
+
 
         //code to find the neighbours of the current node
         const neighbours= links.filter( link => link.target.id == current&&(!closedList.includes(link.source.id)));
+
+        // neighbours.map(link => link.selecting = true)
 
         console.log(neighbours,'neighbours');
 
@@ -205,20 +209,11 @@ async function astarSearch(nodes, links, startNode, endNode) {
             console.log(key, value);
         });
         
-        if(neighbours.includes(endNode)){
-            console.log("found",closedList);
-            return;
-        }
+
 
         await new Promise(r => setTimeout(r, speed));
 
-        //pushing the gOfN of the current node to the gOfNS array and make
-        let pgOfN=links.filter(link=>link.target.id==current&&(!closedList.includes(link.target.id)));
-        console.log(pgOfN,'pgOfN');
-        if(Flag!=0){
-            gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==current).gOfN));
-            console.log(gOfNS,'gOfNS');
-        }
+
 
         //find the node with the lowest f score and make it the current node
         let lowest = -1;
@@ -226,23 +221,73 @@ async function astarSearch(nodes, links, startNode, endNode) {
         fscore.forEach((value, key) => {
             if ((lowest == -1 || value < lowest) && !(closedList.includes(key))&&(nodes.find(node => node.id !=current))) {
                 lowest = value;
-                current = key; 
-                nodes.find(node => node.id == current).active = true
-                console.log(current,'current in fscore');               
+                current = key;
+                // nodes.find(node => node.id == current).active = true
+                console.log(current,'current in fscore');
+                updatefeedBack("lowest fscore node is"+ current+"value is"+ lowest)               
             }
         });
 
+
+
         fscore.clear();
-        
+
         openList.push(current);
         //pushing the first element of openList to closedList
         if (openList.length > 0) {
             closedList.push(openList.shift());
-          }
+        }
 
+        //pushing the gOfN of the current node to the gOfNS array and make
+        //FIND THE NEW PFSCORE BASED OF THE CURRENT NODE AND SELECT THE LOWEST LINKS GOFN 
+        //AND PUSH IT TO THE GOFNS ARRAY
 
-            // links.find(link => link.target.id == current).selected = true
-            console.log(gOfNS,'gOfNS');
+        cneighbours = links.filter(link => link.target.id === current && !closedList.includes(link.target.id));
+
+        for (let i = 0; i < cneighbours.length; i++) {
+            if(Flag==0){
+                if(!closedList.includes(cneighbours[i].target.id)){
+                    cfscore.set(cneighbours[i].source.id, cneighbours[i].gOfN + cneighbours[i].source.hOfN + 0);
+                }
+            }
+            else{
+                if(!closedList.includes(cneighbours[i].target.id)){
+                    cfscore.set(cneighbours[i].source.id, cneighbours[i].gOfN + cneighbours[i].source.hOfN + sumofgOfNS);
+                }
+            }
+        }
+
+        clowest = -1;
+        ccurrent = "";
+        cfscore.forEach((value, key) => {
+            if ((clowest == -1 || value < clowest) && !(closedList.includes(key))&&(nodes.find(node => node.id !=ccurrent))) {
+                clowest = value;
+                ccurrent = key;             
+            }
+        });
+        cfscore.clear();
+        
+        if(ccurrent!=endNode){
+        let pgOfN=links.filter(link=>link.target.id==ccurrent&&!closedList.includes(link.target.id));
+        console.log(pgOfN,'pgOfN');
+        gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent).gOfN));
+        console.log(gOfNS,'gOfNS');
+        }
+
+        if(openList.includes(current)){
+            nodes.find(node => node.id == current).active = true
+        }
+
+        if (current == endNode) {
+            closedList.push(current);
+            nodes.find(node => node.id == current).targetNode = true
+            console.log("found",closedList);
+            return;
+        }
+        
+                
+        // links.find(link => link.target.id == current).selected = true
+        console.log(gOfNS,'gOfNS');
         
 
         await new Promise(r => setTimeout(r, speed));
