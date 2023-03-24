@@ -80,7 +80,7 @@ const linkLabels = linkGroup.append("text")
 
 
     node.append("text")
-        .text(d => d.id+"  h"+d.hOfN)
+        .text(d => d.id)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("fill", "black")
@@ -104,6 +104,13 @@ const linkLabels = linkGroup.append("text")
 
 
 //code to append text above the nodes
+    node.append("text")
+        .text(d => d.hOfN)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("fill", "white")
+        .attr("font-size", "large")
+        .attr("dy", -39);
 
 
 

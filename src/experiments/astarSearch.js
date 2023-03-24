@@ -197,7 +197,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 }
             }
             else{
-                if(!closedList.includes(neighbours[i].target.id)){
+                if(!closedList.includes(neighbours[i].target.id)&&neighbours[i].source.id==ccurrent){
                     fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + sumofgOfNS);
                 }
             }
@@ -273,7 +273,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         });
         cfscore.clear();
         
-        if(ccurrent!=endNode){
+        if(current!=endNode){
         let pgOfN=links.filter(link=>link.target.id==ccurrent&&link.source.id==current&&!closedList.includes(links=>links.target.id));
             console.log(pgOfN,'pgOfN');
             gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent&&pgOf.source.id==current).gOfN));

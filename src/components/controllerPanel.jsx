@@ -7,8 +7,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
     const [targetNode, setTargetNode] = useState('');
     const [sourceNode, setSourceNode] = useState('');
-    const [hofn, setHofn] = useState('');
-    const [gofn, setGofn] = useState('');
+    const [hofn, setHofn] = useState();
+    const [gofn, setGofn] = useState();
     const [manualNOofNodes, setManualNOofNodes] = useState(1);
     const [source, setSource] = useState('');
     const [destination, setDestination] = useState('');
@@ -129,8 +129,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
         setSourceNode('');
         setTargetNode('');
-        setGofn('');
-        setHofn('');
+        setGofn();
+        setHofn();
         }
         else {
             setError({ state: true, message: 'Source and Target node should be present in the graph' });
