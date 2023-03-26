@@ -42,12 +42,12 @@ export const runForceGraph = (container, linksData, nodesData, {
         }));
 
 
-        const linkGroup = svg.append("g")
-  .attr("class", "links")
-  .selectAll("g")
-  .data(linksData)
-  .enter()
-  .append("g");
+    const linkGroup = svg.append("g")
+        .attr("class", "links")
+        .selectAll("g")
+        .data(linksData)
+        .enter()
+        .append("g");
 
 const link = linkGroup.append("line")
   .attr("stroke-width", 1.5)
