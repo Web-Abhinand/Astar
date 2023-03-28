@@ -157,6 +157,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         });
         
     gOfNS.push(bneighbours.find(link => link.source.id == bcurrent).gOfN);
+    bneighbours.find(link => link.source.id == bcurrent).selected = true;
     console.log(bcurrent,'bcurrent');
 
     let cfscore = new Map();
@@ -242,6 +243,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         if (openList.length > 0) {
             closedList.push(openList.shift());
         }
+        
 
         //pushing the gOfN of the current node to the gOfNS array and make
         //FIND THE NEW PFSCORE BASED OF THE CURRENT NODE AND SELECT THE LOWEST LINKS GOFN 
@@ -306,7 +308,8 @@ async function astarSearch(nodes, links, startNode, endNode) {
             updatefeedBack("Found the end node : <p class='highlighted'>" + current + "</p>")
             //change the color of the path also
             for (let i = 0; i < closedList.length; i++) {
-                links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selecting = true
+                links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selected = true;
+                console.log(closedList[i],'closedList[i]');
             }
             return;
         }

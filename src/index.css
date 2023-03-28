@@ -37,7 +37,7 @@ html {
 }
 
 .activated {
-  fill: aquamarine !important;
+  fill: rgb(3, 103, 70) !important;
 }
 
 .deadEnd {
