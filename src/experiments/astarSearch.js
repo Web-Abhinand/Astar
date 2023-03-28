@@ -126,7 +126,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack("All the links that are available from the current node : " + startNode + " are : <p class='highlighted'>" + allAvailableLinks.map(link => link.target.id) + "</p>")
     await new Promise(r => setTimeout(r, speed));
-    updatefeedBack("Selecting a link from the available links based on the heuristic function")
+    updatefeedBack(`Selecting the link with the lowest value of <p class='highlighted'>g(n) + h(n)</p> from the current node : <p class='highlighted'>${startNode}</p>`)
     await new Promise(r => setTimeout(r, speed));
 
 
@@ -193,7 +193,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         for (let i = 0; i < neighbours.length; i++) {
             if(Flag==0){
                 if(!closedList.includes(neighbours[i].target.id)){
-                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + sumofgOfNS);
+                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + links.find(link => link.source.id == neighbours[i].source.id && link.target.id == neighbours[i].target.id).gOfN);
                 }
             }
             else{
@@ -223,10 +223,15 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 lowest = value;
                 current = key;
                 // nodes.find(node => node.id == current).active = true
-                console.log(current,'current in fscore');
-                updatefeedBack("lowest fscore node is"+ current+"value is"+ lowest)               
+                console.log(current,'current in fscore');              
             }
         });
+        //console the fscore map
+        fscore.forEach((value, key) => {
+            updatefeedBack(`f score of ${key} is ${value}`);
+        });
+ 
+        updatefeedBack(`Selecting the node with the lowest f score : <p class='highlighted'>${current}</p>`)
 
 
 
@@ -271,11 +276,21 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 }            
             }
         });
+
+        //console log the cfscore map
+        cfscore.forEach((value, key) => {
+            updatefeedBack(`Neighbours of ${current} nodes are ${key} f score of ${value} `);
+        });
+
         cfscore.clear();
         
         if(current!=endNode){
         let pgOfN=links.filter(link=>link.target.id==ccurrent&&link.source.id==current&&!closedList.includes(links=>links.target.id));
             console.log(pgOfN,'pgOfN');
+            if(pgOfN.length==0){
+                updatefeedBack(`No path found`);
+                return;
+            }
             gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent&&pgOf.source.id==current).gOfN));
             console.log(gOfNS,'gOfNS');
         }
@@ -288,6 +303,11 @@ async function astarSearch(nodes, links, startNode, endNode) {
             closedList.push(current);
             nodes.find(node => node.id == current).targetNode = true
             console.log("found",closedList);
+            updatefeedBack("Found the end node : <p class='highlighted'>" + current + "</p>")
+            //change the color of the path also
+            for (let i = 0; i < closedList.length; i++) {
+                links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selecting = true
+            }
             return;
         }
         

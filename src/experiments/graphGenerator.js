@@ -54,15 +54,19 @@ const link = linkGroup.append("line")
   .attr("marker-end", "url(#arrowhead)")
   .attr("stroke", "white");
 
-const linkLabels = linkGroup.append("text")
-  .text(d => d.gOfN)
-  .attr("text-anchor", "middle")
-  .attr("dominant-baseline", "central")
-  .attr("fill", "white")
-  .attr("font-size", "large")
-  .attr("x", d => (d.source.x + d.target.x) / 2)
-  .attr("y", d => (d.source.y + d.target.y) / 2);
 
+
+    const linkLabels = linkGroup.append("text")
+        .text(d => d.gOfN)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("fill", "white")
+        .attr("font-size", "large")
+
+
+
+
+console.log(linksData,'linksData');
 
     const node = svg.append("g")
         .attr("class", "nodes")
@@ -102,18 +106,20 @@ const linkLabels = linkGroup.append("text")
 
 
 
-
-//code to append text above the nodes
     node.append("text")
-        .text(d => d.hOfN)
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "central")
-        .attr("fill", "white")
-        .attr("font-size", "large")
-        .attr("dy", -39);
-
-
-
+    .text(d => d.hOfN)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .attr("fill", "white")
+    .attr("font-size", "large")
+    .attr("dy", -39)
+    .on("click", function(d) {
+        var newValue = prompt("Enter new value for hOfN:");
+        if (newValue !== null) {
+            d.hOfN = newValue;
+            d3.select(this).text(newValue);
+        }
+    });
 
 
     function dragstarted(event) {
@@ -132,6 +138,7 @@ const linkLabels = linkGroup.append("text")
         event.subject.fx = null;
         event.subject.fy = null;
     }
+    
 
     simulation.on("tick", () => {
         simulation.alpha(0.5);

@@ -59,7 +59,7 @@ html {
 }
 
 .selecting {
-  stroke: red !important;
+  stroke: rgb(88, 2, 2) !important;
   stroke-width: 2 !important;
 }
 
