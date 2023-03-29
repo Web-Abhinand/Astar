@@ -55,7 +55,7 @@ html {
 
 .selected {
   stroke: green !important;
-  stroke-width: 2 !important;
+  stroke-width: 5 !important;
 }
 
 .selecting {

@@ -8,7 +8,7 @@ export default function Playground() {
 
     const [manual,setManual] = React.useState(false);
     const [graphChoice, setGraphChoice] = React.useState(false);
-    const [nodesAndLinks, setNodesAndLinks] = React.useState(generateDirectedNodesAndLinks(10, 10,manual));
+    const [nodesAndLinks, setNodesAndLinks] = React.useState(generateUndirectedNodesAndLinks(10, 10,manual));
 
     const changeGraph = (noOfNodes, noOfLinks) => {
         console.log("changeGraph");
@@ -17,7 +17,7 @@ export default function Playground() {
     }
 
     const changeGraphType = (e) => {
-        setNodesAndLinks(e ? generateUndirectedNodesAndLinks(10, 10,manual) : generateDirectedNodesAndLinks(10, 10,manual));
+        setNodesAndLinks(e ?generateDirectedNodesAndLinks(10, 10,manual) : generateUndirectedNodesAndLinks(10, 10,manual));
         setGraphChoice(e);
     }
     const [noOfNodesAndLinks, setNoOfNodesAndLinks] = useState({ noOfNodes: 0, noOfLinks: 0 });

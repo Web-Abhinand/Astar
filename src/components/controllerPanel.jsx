@@ -75,6 +75,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         setManual(true);
         changeGraph(manualNOofNodes, 0);
         console.log('change graph called');
+        console.log(nodesAndLinks.nodes, "nodes and links in controller panel");
         setRandom(false);
     }
 
@@ -100,6 +101,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
         let nodes = nodesAndLinks.nodes;
         let links = nodesAndLinks.links;
+        console.log(nodes, "nodes in contrller panel");
+        console.log(links, "links in contrller panel");
         //insert hofn value to the node
         nodes = nodes.map(node => {
             if (node.id === sourceNode) {
@@ -111,7 +114,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
         console.log(nodes, "nodes in contrller panel");
         console.log(links, "links in contrller panel");
-        
+
         let sourceNodeToBeAdded = nodes.filter(node => node.id === sourceNode);
         let targetNodeToBeAdded = nodes.filter(node => node.id === targetNode);
         const value = Math.floor(Math.random() * 10) + 1;
@@ -138,7 +141,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
     return (
         <div className="gap-10 shadow-sm shadow-gray-700 tracking-widest p-5 bg-blue m-4">
             <div className="w-full">
-                <Switch changeGraphType={changeGraphType} id={"toggle"} ></Switch>
+                {/* <Switch changeGraphType={changeGraphType} id={"toggle"} ></Switch> */}
+                <h1 className="text-3xl text-center">Astar Algorithm</h1>
             </div>
             {/* new state strats here */}
             {random ?
@@ -245,16 +249,37 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                 <button className="btn btn-primary w-full" onClick={handleManualGraph} style={{ width: '50%', fontWeight: 'bold' }}>Add Custom Nodes</button>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <input type="text" placeholder="Source" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
+                    {/* <input type="text" placeholder="Source" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
                         value={sourceNode}
                         onChange={(e) => {
                             setSourceNode(e.target.value);
                         }}></input>
-                    <input type="text" placeholder="Target" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
+                        <input type="text" placeholder="Target" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
                         value={targetNode}
                         onChange={(e) => {
                             setTargetNode(e.target.value);
-                        }}></input>
+                        }}></input> */}
+                    <select className="select select-bordered select-accent bg-white my-4"
+                        value={sourceNode}
+                        onChange={(e) => {
+                            setSourceNode(e.target.value);
+                        }}>
+                        <option value="">Select Source</option>
+                        {nodesAndLinks.nodes.map((node) => (
+                            <option key={node.id} value={node.id}>{node.id}</option>
+                        ))}
+                    </select>
+
+                    <select className="select select-bordered select-accent bg-white my-4"
+                        value={targetNode}
+                        onChange={(e) => {
+                            setTargetNode(e.target.value);
+                        }}>
+                        <option value="">Select Target</option>
+                        {nodesAndLinks.nodes.map((node) => (
+                            <option key={node.id} value={node.id}>{node.id}</option>
+                        ))}
+                    </select>
                 </div>
 
                 {/*Input for h(n) and g(n)*/}

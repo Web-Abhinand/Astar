@@ -3,6 +3,7 @@ import { current } from "daisyui/src/colors";
 import { Node } from "postcss";
 
 
+
 const event = new CustomEvent('randomSearch')
 export const feedbackDetails = [];
 
@@ -131,8 +132,8 @@ async function astarSearch(nodes, links, startNode, endNode) {
 
 
 
-
-    nodes.find(node => node.id == endNode).hOfN = 0
+    let kO=nodes.find(node => node.id == endNode).hOfN;
+    console.log(kO,'kO');
     let openList = [];
     let closedList = [];
     let fscore = new Map();
@@ -165,7 +166,8 @@ async function astarSearch(nodes, links, startNode, endNode) {
     let clowest;
     let ccurrent;
     let Flag=0;
-
+    
+    
     while(openList.length > 0) {
         nodes.find(node => node.id == endNode).hOfN = 0;
         console.log(links,'links');
@@ -281,7 +283,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
 
         //console log the cfscore map
         cfscore.forEach((value, key) => {
-            updatefeedBack(`Neighbours of ${current} nodes are ${key} f score of ${value} `);
+            updatefeedBack(`Neighbours of ${current} node is ${key} and fscore from ${current} is ${value} `);
         });
 
         cfscore.clear();
@@ -306,6 +308,8 @@ async function astarSearch(nodes, links, startNode, endNode) {
             nodes.find(node => node.id == current).targetNode = true
             console.log("found",closedList);
             updatefeedBack("Found the end node : <p class='highlighted'>" + current + "</p>")
+            nodes.find(node => node.id == endNode).hOfN = kO;
+            console.log(nodes.find(node => node.id == endNode).hOfN,'nodes.find(node => node.id == endNode).hOfN');
             //change the color of the path also
             for (let i = 0; i < closedList.length; i++) {
                 links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selected = true;

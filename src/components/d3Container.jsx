@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { runForceGraph } from "../experiments/graphGenerator";
-import { generateUndirectedNodesAndLinks } from "../experiments/astarSearch";
+import { generateDirectedNodesAndLinks, generateUndirectedNodesAndLinks } from "../experiments/astarSearch";
+
 
 
 const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual,noOfNodesAndLinks,setNoOfNodesAndLinks}) => {
@@ -19,24 +20,19 @@ const ForceGraph = ({ nodesAndLinks, graphType,manual,setManual,noOfNodesAndLink
                 nodesAndLinks.nodes,
                 {
                     color: "#808080",
-                    radius: 30,
-                    graphType: graphType ? "undirected" : "directed",
+                    radius: 20,
+                    graphType: graphType ? "directed" : "undirected",
                 }
             );
         }
     }, [nodesAndLinks]);
-    var nodelinks = generateUndirectedNodesAndLinks(noOfNodesAndLinks.noOfNodes, noOfNodesAndLinks.noOfLinks);
-    console.log(nodelinks, "nodelinks");
-    
 
+   
+    console.log(nodesAndLinks,"nodesAndLinks");
     return (
         <>
             <div style={{padding:'0.5rem'}}><h1 style={{textAlign:'center',fontSize:'2rem'}}></h1>
-                {nodelinks.nodes.map((node, index) => {return(
-                    <div key={index} style={{display:'flex',justifyContent:'space-between',alignItems:'center',margin:'0.5rem'}}>
-                        {/* {node.hOfN} */}
-                    </div>
-                )})}
+                
             </div>
             <div ref={containerRef} className="h-full" />
         </>

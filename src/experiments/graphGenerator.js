@@ -112,7 +112,7 @@ console.log(linksData,'linksData');
     .attr("dominant-baseline", "central")
     .attr("fill", "white")
     .attr("font-size", "large")
-    .attr("dy", -39)
+    .attr("dy", -28)
     .on("click", function(d) {
         var newValue = prompt("Enter new value for hOfN:");
         if (newValue !== null) {
