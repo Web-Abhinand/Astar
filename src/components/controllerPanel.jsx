@@ -107,6 +107,13 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         nodes = nodes.map(node => {
             if (node.id === sourceNode) {
                 node.hOfN = hofn;
+                if (node.hOfN !== null && node.hOfN !== undefined) {
+                    //set error message
+                    setError({ state: true, message: '' });
+                  } else {
+                    // The node.hOfN doesn't have a value, do something here
+                    console.log('noproblem');
+                  }                
             }
             return node;
         })
@@ -147,8 +154,9 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             {/* new state strats here */}
             {random ?
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }} className="my-5">
-                        <label htmlFor="noOfNodes" style={{ display: 'block' }}>No Of Nodes :</label>
+                    <div style={{ display: 'flex', justifyContent: 'space-between'}} className="my-5">
+                    <div className="">
+                        {/* <label htmlFor="noOfNodes" style={{ display: 'block' }}>No Of Nodes :</label> */}
                         <input type="number" name="noOfNodes" onChange={
                             (event) => {
                                 const newValue = parseInt(event.target.value);
@@ -173,8 +181,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                             }
                         } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Node" id="noOfNodes" />
                     </div>
-                    <div style={{ display: 'flex', justifyContent: "space-between" }} className='my5'>
-                        <label htmlFor="noOfLinks" style={{ display: 'block' }}>No Of Links :</label>
+                    <div className=''>
+                        {/* <label htmlFor="noOfLinks" style={{ display: 'block' }}>No Of Links :</label> */}
                         <input type="number" name="noOfLinks" onChange={
                             (event) => {
                                 const newValue = parseInt(event.target.value);
@@ -194,6 +202,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                             }
                         } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Links" id="noOfLinks" />
                     </div>
+                    </div>
                 </> : null}
 
             {/* new state ends here */}
@@ -211,15 +220,17 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             {/* Random state again begins here */}
             {random ?
                 <>
-                    <div className="my-5" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <label htmlFor="source2" style={{ display: 'block' }}>Source Node :</label>
+                <div  style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className="my-5">
+                        {/* <label htmlFor="source2" style={{ display: 'block' }}>Source Node :</label> */}
                         <input type="text" onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source2" />
                     </div>
 
-                    <div className="my-5" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <label htmlFor="destination2">Destination Node :</label>
+                    <div className="my-5">
+                        {/* <label htmlFor="destination2">Destination Node :</label> */}
                         <input type="text" onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination2" />
                     </div>
+                </div>    
 
                     <button className="btn btn-secondary" style={{ width: '50%' }} onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button></> : null}
 
@@ -236,7 +247,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
             {manual ? <>
                 <div className="my-5" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <label style={{ display: 'block' }}>No of nodes :</label>
+                    <label style={{ display: 'block' }} className="my-2">No of nodes :</label>
                     <input type="number" placeholder="No of nodes" className="input input-bordered input-accent bg-white placeholder-gray-800"
                         value={manualNOofNodes}
                         onChange={
@@ -244,9 +255,10 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                                 setManualNOofNodes(e.target.value);
                             }
                         }></input>
+                    <button className="btn btn-primary w-full" onClick={handleManualGraph} style={{ width: '50%', fontWeight: 'bold' }}>Add Custom Nodes</button>
                 </div>
                 {/* button */}
-                <button className="btn btn-primary w-full" onClick={handleManualGraph} style={{ width: '50%', fontWeight: 'bold' }}>Add Custom Nodes</button>
+
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     {/* <input type="text" placeholder="Source" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
@@ -259,7 +271,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                         onChange={(e) => {
                             setTargetNode(e.target.value);
                         }}></input> */}
-                    <select className="select select-bordered select-accent bg-white my-4"
+                    <select className="select select-bordered select-accent bg-white my-4" 
                         value={sourceNode}
                         onChange={(e) => {
                             setSourceNode(e.target.value);
@@ -280,36 +292,38 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                             <option key={node.id} value={node.id}>{node.id}</option>
                         ))}
                     </select>
-                </div>
-
-                {/*Input for h(n) and g(n)*/}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
+                    <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 " style={{width:'25%'}}
                         value={hofn}
                         onChange={(e) => {
+                            if(nodesAndLinks.nodes.find  (node => node.id === sourceNode&&node.hOfN!=parseInt(e.target.value)))         
+                            {                           
+                            setError({ state: true, message: 'If you change the h(n) value of the source node, you will change its original h(n) value. If you want to keep the original h(n) value, please enter the value that was previously assigned to it' });
+                            }
+                            else{
+                                setError({ state: false, message: '' });
+                            }
                             setHofn(parseInt(e.target.value));
                         }}></input>
                     <input type="number" placeholder="g(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
+                        style={{width:'25%'}}
                         value={gofn}
                         onChange={(e) => {
                             setGofn(parseInt(e.target.value));
                         }}></input>
                 </div>
 
-
+                {/*Input for h(n) and g(n)*/}
                 <button className="btn btn-primary my-5" onClick={handleManualLink} style={{ width: '50%', fontWeight: 'bold' }}>Add Link</button>
-                <div style={{ display: "flex", justifyContent: 'space-between' }} className="my-5">
-                    <label htmlFor="source">Source Node :</label>
-                    <input type="text" value={source} onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source" />
-                </div>
+                <div style={{ display: "flex", justifyContent: 'space-between'}} className="my-5">
+                    <div>
+                        <input type="text" value={source} onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source" />
+                    </div>
 
-                <div style={{ display: "flex", justifyContent: 'space-between' }} className="my-5">
-                    <label htmlFor="destination">Destination Node :</label>
-                    <input type="text" value={destination} onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination" />
+                    <div>
+                        <input type="text" value={destination} onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination" />
+                    </div>
+                    <button className="btn btn-secondary" style={{ width: '30%' }} onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button>
                 </div>
-
-                <button className="btn btn-secondary" style={{ width: '50%' }} onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button>
 
             </> : null}
             {

@@ -13,11 +13,11 @@ export default function Playground() {
     const changeGraph = (noOfNodes, noOfLinks) => {
         console.log("changeGraph");
         console.log(noOfNodes, noOfLinks);
-        setNodesAndLinks(graphChoice ? generateUndirectedNodesAndLinks(noOfNodes, noOfLinks,manual) : generateDirectedNodesAndLinks(noOfNodes, noOfLinks,manual));
+        setNodesAndLinks(graphChoice ? generateUndirectedNodesAndLinks(noOfNodes, noOfLinks,manual) : generateUndirectedNodesAndLinks(noOfNodes, noOfLinks,manual));
     }
 
     const changeGraphType = (e) => {
-        setNodesAndLinks(e ?generateDirectedNodesAndLinks(10, 10,manual) : generateUndirectedNodesAndLinks(10, 10,manual));
+        setNodesAndLinks(e ?generateUndirectedNodesAndLinks(10, 10,manual) : generateUndirectedNodesAndLinks(10, 10,manual));
         setGraphChoice(e);
     }
     const [noOfNodesAndLinks, setNoOfNodesAndLinks] = useState({ noOfNodes: 0, noOfLinks: 0 });

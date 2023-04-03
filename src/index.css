@@ -45,12 +45,12 @@ html {
 }
 
 .found {
-  fill : green !important;
+  fill: rgb(3, 103, 70) !important;
   ;
 }
 
 .start {
-  fill: blue !important;
+  fill: rgb(3, 103, 70) !important;
 }
 
 .selected {

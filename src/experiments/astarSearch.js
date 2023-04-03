@@ -282,8 +282,9 @@ async function astarSearch(nodes, links, startNode, endNode) {
         });
 
         //console log the cfscore map
+        updatefeedBack(`Neighbours of ${current} node are : `);
         cfscore.forEach((value, key) => {
-            updatefeedBack(`Neighbours of ${current} node is ${key} and fscore from ${current} is ${value} `);
+            updatefeedBack(`${key} and fscore from ${current} is ${value} `);
         });
 
         cfscore.clear();
