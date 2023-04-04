@@ -3,7 +3,6 @@ import { current } from "daisyui/src/colors";
 import { Node } from "postcss";
 
 
-
 const event = new CustomEvent('randomSearch')
 export const feedbackDetails = [];
 
@@ -293,6 +292,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         let pgOfN=links.filter(link=>link.target.id==ccurrent&&link.source.id==current&&!closedList.includes(links=>links.target.id));
             console.log(pgOfN,'pgOfN');
             if(pgOfN.length==0){
+                nodes.find(node => node.id == endNode).hOfN = kO;
                 updatefeedBack(`No path found`);
                 return;
             }
