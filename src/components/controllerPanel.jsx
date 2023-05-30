@@ -149,7 +149,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         <div className="gap-10 shadow-sm shadow-gray-700 tracking-widest p-5 bg-blue m-4">
             <div className="w-full">
                 {/* <Switch changeGraphType={changeGraphType} id={"toggle"} ></Switch> */}
-                <h1 className="text-3xl text-center">Astar Algorithm</h1>
+                <h1 className="text-3xl text-center">A* Algorithm</h1>
             </div>
             {/* new state strats here */}
             {random ?
