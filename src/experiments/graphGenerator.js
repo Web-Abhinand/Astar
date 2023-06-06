@@ -14,10 +14,10 @@ export const runForceGraph = (container, linksData, nodesData, {
     if (container.innerHTML != "") {
         container.innerHTML = "";
     }
-    console.log(linksData,'linksData');
-    console.log(nodesData,'nodesData');
+    console.log(linksData, 'linksData');
+    console.log(nodesData, 'nodesData');
 
-    var digits=['0','1','2','3','4','5','6','7','8','9'];
+    var digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const containerRect = container.getBoundingClientRect();
     const height = containerRect.height;
     const width = containerRect.width;
@@ -55,10 +55,10 @@ export const runForceGraph = (container, linksData, nodesData, {
         .enter()
         .append("g");
 
-const link = linkGroup.append("line")
-  .attr("stroke-width", 1.5)
-  .attr("marker-end", "url(#arrowhead)")
-  .attr("stroke", "white");
+    const link = linkGroup.append("line")
+        .attr("stroke-width", 1.5)
+        .attr("marker-end", "url(#arrowhead)")
+        .attr("stroke", "white");
 
     //appending gOfN value to the link
     const linkLabels = linkGroup.append("text")
@@ -67,24 +67,40 @@ const link = linkGroup.append("line")
         .attr("dominant-baseline", "central")
         .attr("fill", "white")
         .attr("font-size", "large")
-        .on("click", function(d) {
-            var newValue = prompt("Enter new value for gOfN:");
+        .on("click", function (d,e) {
+            const newValue = parseInt(prompt("Enter new value for gOfN:"));
             if (newValue !== null) {
-              d.gOfN = newValue;
-              d3.select(this).text(newValue);
-              exportedValue = newValue; // Store the value in the exported variable
-              console.log(d.gOfN, 'gOfN');
-              exportValue(exportedValue); // Pass the value to a function for further processing or export
+                d.gOfN = newValue;
+                //code to conver the newValue to a number
+                console.log(e.id, 'e.id in linkLabels');
+                console.log(e, 'e');
+                console.log(linksData, 'linksData in linkLabels');
+                d3.select(this).text(newValue);
+                exportedValue = newValue; // Store the value in the exported variable
+                console.log(d.gOfN, 'gOfN');
+                exportValue(exportedValue); // Pass the value to a function for further processing or export
             }
-          });
+            //code to update the linksData array based on the new value
+            for (let i = 0; i < linksData.length; i++) {
+                if(linksData[i].target.id === e.target.id&&linksData[i].source.id === e.source.id){
+                    linksData[i].gOfN = newValue;
+                }
+            }
+            for(let i=0;i<linksData.length;i++){
+                if(linksData[i].target.id === e.source.id&&linksData[i].source.id === e.target.id){
+                    linksData[i].gOfN = newValue;
+                }
+            }   
+            console.log(linksData, 'linksData after update');
+        });
 
-          function exportValue(value) {
-            // Use the value for exporting or further processing
-            console.log(value);
-            // Perform export or other operations with the value
-          }
+    function exportValue(value) {
+        // Use the value for exporting or further processing
+        console.log(value);
+        // Perform export or other operations with the value
+    }
 
-console.log(linksData,'linksData');
+    console.log(linksData, 'linksData');
 
     const node = svg.append("g")
         .attr("class", "nodes")
@@ -99,7 +115,7 @@ console.log(linksData,'linksData');
 
     node.append("circle")
         .attr("r", radius);
-    
+
     //appending id value to the node
     node.append("text")
         .text(d => d.id)
@@ -107,17 +123,23 @@ console.log(linksData,'linksData');
         .attr("dominant-baseline", "central")
         .attr("fill", "black")
         .attr("font-size", "large")
-        .on("click", function(d) {
-            var oldValue = d.id;
-            var newValue = prompt("Enter new value for id:");
+        .on("click", function (d, e) {
+            const oldValue = e.id;
+            console.log(oldValue, 'oldValue');
+            const newValue = prompt("Enter new value for id:");
             if (newValue !== null) {
-              d.id = newValue;
-              d3.select(this).text(newValue);
-              idValue = newValue; // Store the value in the exported variable
-              //code to update the nodesData array with new id value where old value is oldValue
-                console.log(nodesData,'nodesData');
+                d.id = newValue;
+                d3.select(this).text(newValue);
+                idValue = newValue;
+                for (let i = 0; i < nodesData.length; i++) {
+                    console.log(nodesData[i].id, 'objects[i].id');
+                    console.log(oldValue, 'oldValue');
+                    if (nodesData[i].id == oldValue) {
+                        nodesData[i].id = newValue;
+                    }
+                }
             }
-          });
+        });
 
 
     if (graphType == "directed") {
@@ -143,14 +165,22 @@ console.log(linksData,'linksData');
         .attr("fill", "white")
         .attr("font-size", "large")
         .attr("dy", -28)
-        .on("click", function(d) {
+        .on("click", function (d, e) {
             var newValue = prompt("Enter new value for hOfN:");
             if (newValue !== null) {
-              d.hOfN = newValue;
-              d3.select(this).text(newValue);
-              hOfNValue = newValue; // Store the value in the exported variable
+                d.hOfN = newValue;
+                d3.select(this).text(newValue);
+                hOfNValue = newValue; // Store the value in the exported variable
+                newValue = parseInt(newValue);
             }
-          });
+            //code to update the hOfN value in the nodesData array
+            for (let i = 0; i < nodesData.length; i++) {
+                if (nodesData[i].id == e.id) {
+                    nodesData[i].hOfN = newValue;
+                }
+            }
+            console.log(nodesData, 'nodesData after hOfN update');
+        });
 
 
     function dragstarted(event) {
@@ -169,11 +199,11 @@ console.log(linksData,'linksData');
         event.subject.fx = null;
         event.subject.fy = null;
     }
-    
+
 
     simulation.on("tick", () => {
         simulation.alpha(0.5);
-        
+
 
 
         link
@@ -187,13 +217,13 @@ console.log(linksData,'linksData');
                 return "translate(" + d.x + "," + d.y + ")";
             });
 
-            link.attr("x1", d => d.source.x)
+        link.attr("x1", d => d.source.x)
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
-        
+
         linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
-                  .attr("y", d => (d.source.y + d.target.y) / 2 - 10);
+            .attr("y", d => (d.source.y + d.target.y) / 2 - 10);
 
         d3.selectAll("g.links line")
             .classed("selecting", d => d.selecting);
