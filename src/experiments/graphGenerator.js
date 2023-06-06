@@ -1,5 +1,9 @@
 import * as d3 from 'd3';
-import { text } from 'd3';
+
+let exportedValue;
+export let idValue;
+export let hOfNValue;
+//exporting the value of gOfN
 
 export const runForceGraph = (container, linksData, nodesData, {
     color,
@@ -11,6 +15,8 @@ export const runForceGraph = (container, linksData, nodesData, {
         container.innerHTML = "";
     }
     console.log(linksData,'linksData');
+    console.log(nodesData,'nodesData');
+
     var digits=['0','1','2','3','4','5','6','7','8','9'];
     const containerRect = container.getBoundingClientRect();
     const height = containerRect.height;
@@ -54,17 +60,29 @@ const link = linkGroup.append("line")
   .attr("marker-end", "url(#arrowhead)")
   .attr("stroke", "white");
 
-
-
+    //appending gOfN value to the link
     const linkLabels = linkGroup.append("text")
         .text(d => d.gOfN)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("fill", "white")
         .attr("font-size", "large")
+        .on("click", function(d) {
+            var newValue = prompt("Enter new value for gOfN:");
+            if (newValue !== null) {
+              d.gOfN = newValue;
+              d3.select(this).text(newValue);
+              exportedValue = newValue; // Store the value in the exported variable
+              console.log(d.gOfN, 'gOfN');
+              exportValue(exportedValue); // Pass the value to a function for further processing or export
+            }
+          });
 
-
-
+          function exportValue(value) {
+            // Use the value for exporting or further processing
+            console.log(value);
+            // Perform export or other operations with the value
+          }
 
 console.log(linksData,'linksData');
 
@@ -81,14 +99,27 @@ console.log(linksData,'linksData');
 
     node.append("circle")
         .attr("r", radius);
-
-
+    
+    //appending id value to the node
     node.append("text")
         .text(d => d.id)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("fill", "black")
-        .attr("font-size", "large");
+        .attr("font-size", "large")
+        .on("click", function(d) {
+            var oldValue = d.id;
+            var newValue = prompt("Enter new value for id:");
+            if (newValue !== null) {
+              d.id = newValue;
+              d3.select(this).text(newValue);
+              idValue = newValue; // Store the value in the exported variable
+              //code to update the nodesData array with new id value where old value is oldValue
+                console.log(nodesData,'nodesData');
+            }
+          });
+
+
     if (graphType == "directed") {
         const marker = svg.append("defs")
             .append("marker")
@@ -104,20 +135,22 @@ console.log(linksData,'linksData');
             .attr("d", "M0,-5L10,0L0,5");
     }
 
+    //appending hOfN value to the node
     node.append("text")
-    .text(d => d.hOfN)
-    .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "central")
-    .attr("fill", "white")
-    .attr("font-size", "large")
-    .attr("dy", -28)
-    .on("click", function(d) {
-        var newValue = prompt("Enter new value for hOfN:");
-        if (newValue !== null) {
-            d.hOfN = newValue;
-            d3.select(this).text(newValue);
-        }
-    });
+        .text(d => d.hOfN)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("fill", "white")
+        .attr("font-size", "large")
+        .attr("dy", -28)
+        .on("click", function(d) {
+            var newValue = prompt("Enter new value for hOfN:");
+            if (newValue !== null) {
+              d.hOfN = newValue;
+              d3.select(this).text(newValue);
+              hOfNValue = newValue; // Store the value in the exported variable
+            }
+          });
 
 
     function dragstarted(event) {
@@ -185,3 +218,4 @@ console.log(linksData,'linksData');
         }
     };
 }
+export const getExportedValue = () => exportedValue;

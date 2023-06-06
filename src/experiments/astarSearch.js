@@ -1,8 +1,6 @@
-import { link } from "d3";
-import { current } from "daisyui/src/colors";
-import { Node } from "postcss";
-
-
+import { getExportedValue } from './graphGenerator.js';
+import { idValue } from './graphGenerator.js';
+import { hOfNValue } from './graphGenerator.js';
 const event = new CustomEvent('randomSearch')
 export const feedbackDetails = [];
 
@@ -58,6 +56,7 @@ export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks, man
 
 }
 
+
 export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks, sourceNode, targetNode) {
     let nodes = [];
     let links = [];
@@ -79,7 +78,7 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks, s
         const target = nodes[Math.floor(Math.random() * nodes.length)].id;
 
         // check if the relation exist
-        if (source == target || links.find(link => (link.source === source && link.target === target) || (link.source === target && link.target === source))) {
+        if (source === target || links.find(link => (link.source === source && link.target === target) || (link.source === target && link.target === source))) {
             i--;
             continue;
         }
@@ -97,6 +96,8 @@ const visitedNode = new Set()
 const path = []
 const speed = 1000
 
+const exportedValue = getExportedValue();
+console.log(exportedValue,'exportedValue from astarSearch');
 
 // Random Search Algorithm
 
@@ -129,6 +130,9 @@ async function astarSearch(nodes, links, startNode, endNode) {
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack(`Selecting the link with the lowest value of <p class='highlighted'>g(n) + h(n)</p> from the current node : <p class='highlighted'>${startNode}</p>`)
     await new Promise(r => setTimeout(r, speed));
+    console.log(getExportedValue(),'gOfN from astarSearch'); // Output the value of d.gOfN
+    console.log(idValue,'idValue from astarSearch'); // Output the value of d.gOfN
+    console.log(hOfNValue,'hOfNValue from astarSearch'); // Output the value of d.gOfN
 
     //step1
     let openList = []
