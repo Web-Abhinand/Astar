@@ -104,8 +104,6 @@ console.log(linksData,'linksData');
             .attr("d", "M0,-5L10,0L0,5");
     }
 
-
-
     node.append("text")
     .text(d => d.hOfN)
     .attr("text-anchor", "middle")

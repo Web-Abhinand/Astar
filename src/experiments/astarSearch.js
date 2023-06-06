@@ -19,8 +19,8 @@ const clearfeedBack = () => {
 const alphaarray = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90]
 
 
-export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manual,sourceNode,targetNode) {
-  
+export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks, manual, sourceNode, targetNode) {
+
     let nodes = [];
     let links = [];
     for (let i = 0; i < noOfNodes; i++) {
@@ -31,7 +31,7 @@ export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manu
             continue;
         }
 
-        nodes.push({ id: c,hOfN : Math.floor(Math.random() * 10) + 1 });
+        nodes.push({ id: c, hOfN: Math.floor(Math.random() * 10) + 1 });
 
     }
 
@@ -46,17 +46,19 @@ export const generateDirectedNodesAndLinks = function (noOfNodes, noOfLinks,manu
             continue;
         }
         const gOfN = Math.floor(Math.random() * 10) + 1;
-        
-        links.push({ source, target, value: Math.floor(Math.random() * 10) + 1, 
-        gOfN: gOfN});
+
+        links.push({
+            source, target, value: Math.floor(Math.random() * 10) + 1,
+            gOfN: gOfN
+        });
     }
-    
+
 
     return { nodes, links };
 
 }
 
-export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,sourceNode,targetNode) {
+export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks, sourceNode, targetNode) {
     let nodes = [];
     let links = [];
 
@@ -68,8 +70,8 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,so
             i--;
             continue;
         }
-        
-        nodes.push({ id: c, hOfN : Math.floor(Math.random() * 10) + 1 });
+
+        nodes.push({ id: c, hOfN: Math.floor(Math.random() * 10) + 1 });
     }
 
     for (let i = 0; i < noOfLinks; i++) {
@@ -81,7 +83,6 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks,so
             i--;
             continue;
         }
-
         //code to make the graph undirected eg: if a->b exists then b->a also exists         
         const value = Math.floor(Math.random() * 10) + 1;
         const gOfN = Math.floor(Math.random() * 10) + 1;
@@ -129,220 +130,151 @@ async function astarSearch(nodes, links, startNode, endNode) {
     updatefeedBack(`Selecting the link with the lowest value of <p class='highlighted'>g(n) + h(n)</p> from the current node : <p class='highlighted'>${startNode}</p>`)
     await new Promise(r => setTimeout(r, speed));
 
-
-
-    let kO=nodes.find(node => node.id == endNode).hOfN;
-    console.log(kO,'kO');
-    let openList = [];
-    let closedList = [];
+    //step1
+    let openList = []
+    let closedList = []
+    let current = nodes.find(node => node.id == startNode).id
+    let end = nodes.find(node => node.id == endNode)
+    openList.push(current)
+    let neighbours = [];
     let fscore = new Map();
-    openList.push(startNode);
-    let gOfNS=[];
-    let sumofgOfNS;
-    let bcurrent = "";
-    let bfscore = new Map();
-    let bneighbours = [];
-    bneighbours= links.filter( link => link.target.id == startNode);
-    for(let i=0;i<bneighbours.length;i++){
-        bfscore.set(bneighbours[i].source.id, bneighbours[i].gOfN + bneighbours[i].source.hOfN);
-    }
+    let gOfNS = [];
+    let flag = 0;
+    let sumofgOfNS = 0;
 
-    let blowest = -1;
-        bcurrent = "";
-        bfscore.forEach((value, key) => {
-            if ((blowest == -1 || value < blowest)) {
-                blowest = value;
-                bcurrent = key;               
-            }
-        });
-        
-    gOfNS.push(bneighbours.find(link => link.source.id == bcurrent).gOfN);
-    bneighbours.find(link => link.source.id == bcurrent).selected = true;
-    console.log(bcurrent,'bcurrent');
+    while (openList.length > 0) {
 
-    let cfscore = new Map();
-    let cneighbours = [];
-    let clowest;
-    let ccurrent;
-    let Flag=0;
-    
-    
-    while(openList.length > 0) {
-        nodes.find(node => node.id == endNode).hOfN = 0;
-        console.log(links,'links');
-        console.log(nodes,'nodes');
-        //code to find sum of elements of gOfNS
-        sumofgOfNS = gOfNS.reduce((a, b) => a + b, 0);
-        console.log(sumofgOfNS,'sumofgOfNS');
-
-        //current has start node @ first iteration
-        let current = openList[0];
-        console.log(current,'current');
-
-        
-
-
-        //code to find the neighbours of the current node
-        const neighbours= links.filter( link => link.target.id == current&&(!closedList.includes(link.source.id)));
-
-        // neighbours.map(link => link.selecting = true)
-
-        console.log(neighbours,'neighbours');
-
-
-
-        //find the f score of all the neighbours
-        for (let i = 0; i < neighbours.length; i++) {
-            if(Flag==0){
-                if(!closedList.includes(neighbours[i].target.id)){
-                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + links.find(link => link.source.id == neighbours[i].source.id && link.target.id == neighbours[i].target.id).gOfN);
-                }
-            }
-            else{
-                if(!closedList.includes(neighbours[i].target.id)&&neighbours[i].source.id==ccurrent){
-                    fscore.set(neighbours[i].source.id, neighbours[i].source.hOfN + sumofgOfNS);
-                }
-            }
-            //code to find the f score of the neighbours in closed list
-
+        //step2
+        if (openList.length === 0) {
+            return
         }
-    
-        fscore.forEach((value, key) => {
-            console.log(key, value);
-        });
-        
 
+        //Step 3
+        updatefeedBack(`OPEN LIST : <p class='highlighted'>${openList}</p>`)
+        if (openList.includes(current)) {
+            openList = openList.filter(item => item !== current);
+        }
+
+        closedList.push(current);
+        console.log(openList, "openList");
+        if (current === endNode) {
+            console.log("found the end node", current);
+            return
+        }
+
+
+        //step 4
+        console.log(nodes, "nodes")
+        neighbours = links.filter(link => link.source.id == current)
+        console.log(neighbours, "neighbours");
+
+
+        //step 5
+        if (neighbours.find(neighbour => neighbour.target.id == endNode)) {
+            console.log("found the end node", neighbours.find(neighbour => neighbour.target.id == endNode));
+            closedList.push(endNode);
+            console.log(closedList, "closedList in step 5")
+            updatefeedBack(`CLOSED LIST : <p class='highlighted'>${closedList}</p>`)
+            await new Promise(r => setTimeout(r, speed));
+            nodes.find(node => node.id == endNode).active = true
+            await new Promise(r => setTimeout(r, speed));
+            updatefeedBack(`Goal Node Reached: ${endNode}`);
+
+            //code to change the color of the link
+            console.log('exiting from step 5')
+            console.log('current', current);
+
+            // for (let i = 0; i < closedList.length; i++) {
+            //     links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selected = true;
+            //     console.log(closedList[i],'closedList[i]');
+            // }
+
+            //code to change the color of the link between current and end node
+            links.find(link => link.source.id === current && link.target.id === endNode).selected = true;
+
+            return
+        }
+
+        //step 6
+        for (let i = 0; i < neighbours.length; i++) {
+            if (flag === 0) {
+                fscore.set(neighbours[i].target.id, neighbours[i].target.hOfN + neighbours[i].gOfN);
+                openList.push(neighbours[i].target.id);
+            }
+            else {
+                if (!closedList.includes(neighbours[i].target.id)) {
+                    fscore.set(neighbours[i].target.id, neighbours[i].target.hOfN + sumofgOfNS + neighbours[i].gOfN);
+                }
+                if (!openList.includes(neighbours[i].target.id) && !closedList.includes(neighbours[i].target.id)) {
+                    openList.push(neighbours[i].target.id);
+                }
+                // if all the neighbours are in closed list then then set the first element of open list as current and continue the  iterations  
+                function checkElementsPresent(neighbors, closedList) {
+                    for (let i = 0; i < neighbors.length; i++) {
+                        if (!closedList.includes(neighbors[i])) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                if (checkElementsPresent(neighbours, closedList)) {
+                    console.log("All elements of neighbors are present in closedList");
+                } else {
+                    console.log("Not all elements of neighbors are present in closedList");
+                }
+
+            }
+        }
 
         await new Promise(r => setTimeout(r, speed));
-
-
-
-        //find the node with the lowest f score and make it the current node
+        updatefeedBack("fscore of all the nodes : <p class='highlighted'>" + Array.from(fscore) + "</p>")
+        //find the minimum value of fscore and set it as current
         let lowest = -1;
-        current = "";
         fscore.forEach((value, key) => {
-            if ((lowest == -1 || value < lowest) && !(closedList.includes(key))&&(nodes.find(node => node.id !=current))) {
+            if ((lowest == -1 || value < lowest) && !(closedList.includes(key)) && (nodes.find(node => node.id != current))) {
                 lowest = value;
                 current = key;
-                // nodes.find(node => node.id == current).active = true
-                console.log(current,'current in fscore');              
-            }
-        });
-        //console the fscore map
-        fscore.forEach((value, key) => {
-            updatefeedBack(`f score of ${key} is ${value}`);
-        });
- 
-        updatefeedBack(`Selecting the node with the lowest f score : <p class='highlighted'>${current}</p>`)
-
-
-
-        fscore.clear();
-
-        openList.push(current);
-        //pushing the first element of openList to closedList
-        if (openList.length > 0) {
-            closedList.push(openList.shift());
-        }
-        
-
-        //pushing the gOfN of the current node to the gOfNS array and make
-        //FIND THE NEW PFSCORE BASED OF THE CURRENT NODE AND SELECT THE LOWEST LINKS GOFN 
-        //AND PUSH IT TO THE GOFNS ARRAY
-
-        cneighbours = links.filter(link => link.target.id === current && !closedList.includes(link.source.id));
-        console.log(cneighbours,'cneighbours');
-
-        for (let i = 0; i < cneighbours.length; i++) {
-            if(Flag==0){
-                if(!closedList.includes(cneighbours[i].target.id)){
-                    cfscore.set(cneighbours[i].source.id,cneighbours[i].source.hOfN + cneighbours[i].gOfN);
-                }
-            }
-            else{
-                if(!closedList.includes(cneighbours[i].target.id)){
-                    cfscore.set(cneighbours[i].source.id,cneighbours[i].source.hOfN + cneighbours[i].gOfN);
-                }
-            }
-        }
-
-        clowest = -1;
-        ccurrent = "";
-        cfscore.forEach((value, key) => {
-            console.log(closedList,'closedList');
-            if ((clowest == -1 || value < clowest)&& nodes.find(node => node.id != ccurrent)) {
-                if(!closedList.includes(key)){
-                    console.log(key,'key');
-                    console.log(value,'value');
-                    clowest = value;
-                    ccurrent = key;
-                }            
+                console.log(current, 'current in fscore');
             }
         });
 
-        //console log the cfscore map
-        updatefeedBack(`Neighbours of ${current} node are : `);
-        cfscore.forEach((value, key) => {
-            updatefeedBack(`${key} and fscore from ${current} is ${value} `);
-        });
-
-        cfscore.clear();
-        
-        if(current!=endNode){
-        let pgOfN=links.filter(link=>link.target.id==ccurrent&&link.source.id==current&&!closedList.includes(links=>links.target.id));
-            console.log(pgOfN,'pgOfN');
-            if(pgOfN.length==0){
-                nodes.find(node => node.id == endNode).hOfN = kO;
-                updatefeedBack(`No path found`);
-                return;
-            }
-            gOfNS.push((pgOfN.find(pgOf=>pgOf.target.id==ccurrent&&pgOf.source.id==current).gOfN));
-            console.log(gOfNS,'gOfNS');
-        }
-
-        if(openList.includes(current)){
-            nodes.find(node => node.id == current).active = true
-        }
-
-        if (current == endNode) {
-            closedList.push(current);
-            nodes.find(node => node.id == current).targetNode = true
-            console.log("found",closedList);
-            updatefeedBack("Found the end node : <p class='highlighted'>" + current + "</p>")
-            nodes.find(node => node.id == endNode).hOfN = kO;
-            console.log(nodes.find(node => node.id == endNode).hOfN,'nodes.find(node => node.id == endNode).hOfN');
-            //change the color of the path also
-            for (let i = 0; i < closedList.length; i++) {
-                links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selected = true;
-                console.log(closedList[i],'closedList[i]');
-            }
-            return;
-        }
-        
-                
-        // links.find(link => link.target.id == current).selected = true
-        console.log(gOfNS,'gOfNS');
-        
+        //code to change the color of the link between current and last element of closed list
+        links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current).selected = true;
 
         await new Promise(r => setTimeout(r, speed));
-
-        console.log(current,'current');
-
-        lowest = -1;
-        // closedList=openList.pop();
+        updatefeedBack("lowest fscore node : <p class='highlighted'>" + current + "</p>" + " with fscore : <p class='highlighted'>" + lowest + "</p>")
+        fscore.clear();
+        await new Promise(r => setTimeout(r, speed));
+        nodes.find(node => node.id === current).active = true
+        //if current is the end node then return the path
+        if (current === endNode) {
+            console.log('path found');
+            updatefeedBack(`CLOSED LIST : <p class='highlighted'>${closedList}</p>`)
+            updatefeedBack("Path found")
+            //remove current from openlist
+            openList = openList.filter(item => item !== current);
+            updatefeedBack(`OPEN LIST : <p class='highlighted'>${openList}</p>`)
+            for (let i = 0; i < closedList.length; i++) {
+                links.find(link => link.source.id === closedList[i] && link.target.id == closedList[i + 1]).selected = true;
+                console.log(closedList[i], 'closedList[i]');
+            }
+            return
+        }
 
         
+        gOfNS.push(links.find(link => link.target.id === closedList[closedList.length - 1] && link.source.id === current).gOfN);
+        console.log(gOfNS, "gOfNS");
+        sumofgOfNS = gOfNS.reduce((a, b) => a + b, 0);
+        console.log(sumofgOfNS, "sumofgOfNS");
+        flag = flag + 1;
+    }
 
 
-
-        Flag=Flag+1;
-        //final path
-        console.log(closedList,'final path');
-    }    
-
-    allAvailableLinks.map(link => link.selecting = false) 
+    allAvailableLinks.map(link => link.selecting = false)
 
     // Dead End
+
     updatefeedBack("No path found from node : " + startNode + "")
     await new Promise(r => setTimeout(r, speed));
 
