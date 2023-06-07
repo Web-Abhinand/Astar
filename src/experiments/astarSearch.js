@@ -97,9 +97,9 @@ const path = []
 const speed = 1000
 
 const exportedValue = getExportedValue();
-console.log(exportedValue,'exportedValue from astarSearch');
+console.log(exportedValue, 'exportedValue from astarSearch');
 
-// Random Search Algorithm
+// Astar Search Algorithm
 
 export async function initAstarSearch(nodes, links, startNode, endNode) {
     nodes.map(node => node.active = false)
@@ -130,9 +130,9 @@ async function astarSearch(nodes, links, startNode, endNode) {
     await new Promise(r => setTimeout(r, speed));
     updatefeedBack(`Selecting the link with the lowest value of <p class='highlighted'>g(n) + h(n)</p> from the current node : <p class='highlighted'>${startNode}</p>`)
     await new Promise(r => setTimeout(r, speed));
-    console.log(getExportedValue(),'gOfN from astarSearch'); // Output the value of d.gOfN
-    console.log(idValue,'idValue from astarSearch'); // Output the value of d.gOfN
-    console.log(hOfNValue,'hOfNValue from astarSearch'); // Output the value of d.gOfN
+    console.log(getExportedValue(), 'gOfN from astarSearch'); // Output the value of d.gOfN
+    console.log(idValue, 'idValue from astarSearch'); // Output the value of d.gOfN
+    console.log(hOfNValue, 'hOfNValue from astarSearch'); // Output the value of d.gOfN
 
     //step1
     let openList = []
@@ -154,7 +154,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
         }
 
         //Step 3
-        updatefeedBack(`OPEN LIST : <p class='highlighted'>${openList}</p>`)
+        updatefeedBack(`OPEN LIST : ${openList}</p>`)
         if (openList.includes(current)) {
             openList = openList.filter(item => item !== current);
         }
@@ -183,20 +183,25 @@ async function astarSearch(nodes, links, startNode, endNode) {
             nodes.find(node => node.id == endNode).active = true
             await new Promise(r => setTimeout(r, speed));
             updatefeedBack(`Goal Node Reached: ${endNode}`);
-
             //code to change the color of the link
             console.log('exiting from step 5')
             console.log('current', current);
-
-            // for (let i = 0; i < closedList.length; i++) {
-            //     links.find(link => link.source.id == closedList[i] && link.target.id == closedList[i + 1]).selected = true;
-            //     console.log(closedList[i],'closedList[i]');
-            // }
-
             //code to change the color of the link between current and end node
             links.find(link => link.source.id === current && link.target.id === endNode).selected = true;
-
             return
+        }
+
+        //code to check if all the neighbours of current are in closed list
+        checkElementsPresent(neighbours, closedList);
+        function checkElementsPresent(neighbors, closedList) {
+            for (let i = 0; i < neighbors.length; i++) {
+                if (!closedList.includes(neighbors[i].target.id)) {
+                    console.log("Not all elements of neighbors are present in closedList")
+                    return false;
+                }
+            }
+            console.log("All elements of neighbors are present in closedList");
+            return true;
         }
 
         //step 6
@@ -212,27 +217,13 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 if (!openList.includes(neighbours[i].target.id) && !closedList.includes(neighbours[i].target.id)) {
                     openList.push(neighbours[i].target.id);
                 }
-                // if all the neighbours are in closed list then then set the first element of open list as current and continue the  iterations  
-                function checkElementsPresent(neighbors, closedList) {
-                    for (let i = 0; i < neighbors.length; i++) {
-                        if (!closedList.includes(neighbors[i])) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-
-                if (checkElementsPresent(neighbours, closedList)) {
-                    console.log("All elements of neighbors are present in closedList");
-                } else {
-                    console.log("Not all elements of neighbors are present in closedList");
-                }
-
             }
         }
 
         await new Promise(r => setTimeout(r, speed));
         updatefeedBack("fscore of all the nodes : <p class='highlighted'>" + Array.from(fscore) + "</p>")
+
+
         //find the minimum value of fscore and set it as current
         let lowest = -1;
         fscore.forEach((value, key) => {
@@ -244,13 +235,18 @@ async function astarSearch(nodes, links, startNode, endNode) {
         });
 
         //code to change the color of the link between current and last element of closed list
-        links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current).selected = true;
+        if (links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current)) {
+            links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current).selected = true;
+        }
+
 
         await new Promise(r => setTimeout(r, speed));
         updatefeedBack("lowest fscore node : <p class='highlighted'>" + current + "</p>" + " with fscore : <p class='highlighted'>" + lowest + "</p>")
         fscore.clear();
         await new Promise(r => setTimeout(r, speed));
         nodes.find(node => node.id === current).active = true
+
+
         //if current is the end node then return the path
         if (current === endNode) {
             console.log('path found');
@@ -266,14 +262,16 @@ async function astarSearch(nodes, links, startNode, endNode) {
             return
         }
 
-        
-        gOfNS.push(links.find(link => link.target.id === closedList[closedList.length - 1] && link.source.id === current).gOfN);
-        console.log(gOfNS, "gOfNS");
-        sumofgOfNS = gOfNS.reduce((a, b) => a + b, 0);
-        console.log(sumofgOfNS, "sumofgOfNS");
-        flag = flag + 1;
-    }
 
+        if (links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current)) {
+            gOfNS.push(links.find(link => link.target.id === closedList[closedList.length - 1] && link.source.id === current).gOfN);
+            console.log(gOfNS, "gOfNS");
+            sumofgOfNS = gOfNS.reduce((a, b) => a + b, 0);
+            console.log(sumofgOfNS, "sumofgOfNS");
+            flag = flag + 1;
+        }
+
+    }
 
     allAvailableLinks.map(link => link.selecting = false)
 

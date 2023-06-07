@@ -1,11 +1,12 @@
 import * as d3 from 'd3';
+import ForceGraph from '../components/d3Container';
 
 let exportedValue;
 export let idValue;
 export let hOfNValue;
 //exporting the value of gOfN
-
-export const runForceGraph = (container, linksData, nodesData, {
+let flagg = false;
+export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks,setNoOfNodesAndLinks,{
     color,
     radius,
     graphType
@@ -17,7 +18,6 @@ export const runForceGraph = (container, linksData, nodesData, {
     console.log(linksData, 'linksData');
     console.log(nodesData, 'nodesData');
 
-    var digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const containerRect = container.getBoundingClientRect();
     const height = containerRect.height;
     const width = containerRect.width;
@@ -67,30 +67,30 @@ export const runForceGraph = (container, linksData, nodesData, {
         .attr("dominant-baseline", "central")
         .attr("fill", "white")
         .attr("font-size", "large")
-        .on("click", function (d,e) {
+        .on("click", function (d, e) {
             const newValue = parseInt(prompt("Enter new value for gOfN:"));
             if (newValue !== null) {
-                d.gOfN = newValue;
-                //code to conver the newValue to a number
+                flagg = true;
+                console.log(noOfNodesAndLinks,'noOfNodesAndLinks')                //code to conver the newValue to a number
                 console.log(e.id, 'e.id in linkLabels');
                 console.log(e, 'e');
                 console.log(linksData, 'linksData in linkLabels');
                 d3.select(this).text(newValue);
-                exportedValue = newValue; // Store the value in the exported variable
+                exportedValue = newValue; 
                 console.log(d.gOfN, 'gOfN');
-                exportValue(exportedValue); // Pass the value to a function for further processing or export
+                exportValue(exportedValue); 
             }
             //code to update the linksData array based on the new value
             for (let i = 0; i < linksData.length; i++) {
-                if(linksData[i].target.id === e.target.id&&linksData[i].source.id === e.source.id){
+                if (linksData[i].target.id === e.target.id && linksData[i].source.id === e.source.id) {
                     linksData[i].gOfN = newValue;
                 }
             }
-            for(let i=0;i<linksData.length;i++){
-                if(linksData[i].target.id === e.source.id&&linksData[i].source.id === e.target.id){
+            for (let i = 0; i < linksData.length; i++) {
+                if (linksData[i].target.id === e.source.id && linksData[i].source.id === e.target.id) {
                     linksData[i].gOfN = newValue;
                 }
-            }   
+            }
             console.log(linksData, 'linksData after update');
         });
 
