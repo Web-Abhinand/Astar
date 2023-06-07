@@ -78,9 +78,8 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                 d3.select(this).text(newValue);
                 exportedValue = newValue; 
                 console.log(d.gOfN, 'gOfN');
-                exportValue(exportedValue); 
             }
-            //code to update the linksData array based on the new value
+
             for (let i = 0; i < linksData.length; i++) {
                 if (linksData[i].target.id === e.target.id && linksData[i].source.id === e.source.id) {
                     linksData[i].gOfN = newValue;
@@ -93,12 +92,6 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
             }
             console.log(linksData, 'linksData after update');
         });
-
-    function exportValue(value) {
-        // Use the value for exporting or further processing
-        console.log(value);
-        // Perform export or other operations with the value
-    }
 
     console.log(linksData, 'linksData');
 

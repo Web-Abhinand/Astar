@@ -4,8 +4,8 @@ import { runForceGraph } from "../experiments/graphGenerator";
 const ForceGraph = ({ nodesAndLinks, graphType, manual, setManual, noOfNodesAndLinks, setNoOfNodesAndLinks }) => {
     const containerRef = useRef(null);
     let changePointer;
-
-
+    const [reload , setReload] = useState(false);
+    
     useEffect(() => {
         if (containerRef.current) {
             changePointer = runForceGraph(
@@ -22,16 +22,15 @@ const ForceGraph = ({ nodesAndLinks, graphType, manual, setManual, noOfNodesAndL
             );
         }
         console.log(nodesAndLinks, "nodesAndLinks");
-    }, [nodesAndLinks]);
+    }, [nodesAndLinks, nodesAndLinks.links]);
 
     console.log(nodesAndLinks, "nodesAndLinks");
     console.log(containerRef.current, "containerRef.current");
     return (
         <>
-            <div style={{ padding: '0.5rem' }}><h1 style={{ textAlign: 'center', fontSize: '2rem' }}></h1>
-
+            <div style={{ padding: '0.5rem' }}><h1 style={{ textAlign: 'center', fontSize: '2rem' }}></h1> 
             </div>
-            <div ref={containerRef} className="h-full" />
+            <div ref={containerRef} className="h-full" id="graphContainer"/>
         </>
     );
 };

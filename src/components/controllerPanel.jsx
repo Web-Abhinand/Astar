@@ -1,4 +1,3 @@
-import Switch from "./mini/switch";
 import { initAstarSearch } from "../experiments/astarSearch";
 import { useState, useEffect } from "react";
 
@@ -26,22 +25,21 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
     const handleSourceChange = (e) => {
         console.log(typeof (e.target.value));
         console.log(e.target.value.length);
-        const capitalLettersRegEx = /^[A-Z]$/;
-        if (!capitalLettersRegEx.test(e.target.value) && e.target.value.length !== 0) {
+        const alphabetRegEx = /[a-zA-Z]/;
+        if (!alphabetRegEx.test(e.target.value) && e.target.value.length !== 0) {
             setAlertt(true);
         }
         else { setAlertt(false); }
-        setSource(e.target.value);
+        setSource(e.target.value.toUpperCase());
     }
 
     const handleDestinationChange = (e) => {
-        const capitalLettersRegEx = /^[A-Z]$/;
-        if (!capitalLettersRegEx.test(e.target.value) && e.target.value.length !== 0) {
+        const alphabetRegEx = /[a-zA-Z]/;
+        if (!alphabetRegEx.test(e.target.value) && e.target.value.length !== 0) {
             setAlertt(true);
         }
         else { setAlertt(false); }
-        console.log(e.target.value);
-        setDestination(e.target.value);
+        setDestination(e.target.value.toUpperCase());
     }
 
     const startSearch = async (nodes, links, source, destination) => {

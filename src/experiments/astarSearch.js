@@ -192,16 +192,19 @@ async function astarSearch(nodes, links, startNode, endNode) {
         }
 
         //code to check if all the neighbours of current are in closed list
-        checkElementsPresent(neighbours, closedList);
         function checkElementsPresent(neighbors, closedList) {
             for (let i = 0; i < neighbors.length; i++) {
                 if (!closedList.includes(neighbors[i].target.id)) {
-                    console.log("Not all elements of neighbors are present in closedList")
                     return false;
                 }
             }
-            console.log("All elements of neighbors are present in closedList");
             return true;
+        }
+        if(checkElementsPresent(neighbours, closedList)){
+            console.log("All elements of neighbors are present in closedList");
+        }
+        else{
+            console.log("Not all elements of neighbors are present in closedList")
         }
 
         //step 6
@@ -217,6 +220,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 if (!openList.includes(neighbours[i].target.id) && !closedList.includes(neighbours[i].target.id)) {
                     openList.push(neighbours[i].target.id);
                 }
+
             }
         }
 
@@ -246,7 +250,6 @@ async function astarSearch(nodes, links, startNode, endNode) {
         await new Promise(r => setTimeout(r, speed));
         nodes.find(node => node.id === current).active = true
 
-
         //if current is the end node then return the path
         if (current === endNode) {
             console.log('path found');
@@ -270,13 +273,11 @@ async function astarSearch(nodes, links, startNode, endNode) {
             console.log(sumofgOfNS, "sumofgOfNS");
             flag = flag + 1;
         }
-
     }
 
     allAvailableLinks.map(link => link.selecting = false)
 
     // Dead End
-
     updatefeedBack("No path found from node : " + startNode + "")
     await new Promise(r => setTimeout(r, speed));
 
