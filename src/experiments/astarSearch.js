@@ -201,7 +201,16 @@ async function astarSearch(nodes, links, startNode, endNode) {
             return true;
         }
         if(checkElementsPresent(neighbours, closedList)){
-            console.log("All elements of neighbors are present in closedList");
+            // code to change the color of the link between closed list
+
+            // for (let i = 0; i < closedList.length-1; i++) {
+            //     links.find(link => link.source.id === closedList[i] && link.target.id == closedList[i + 1]).selected = false;
+            //     console.log(closedList[i], 'closedList[i]');
+            // }
+
+           
+           console.log("All elements of neighbors are present in closedList");
+            current = openList[0];
         }
         else{
             console.log("Not all elements of neighbors are present in closedList")
@@ -264,7 +273,6 @@ async function astarSearch(nodes, links, startNode, endNode) {
             }
             return
         }
-
 
         if (links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current)) {
             gOfNS.push(links.find(link => link.target.id === closedList[closedList.length - 1] && link.source.id === current).gOfN);

@@ -46,6 +46,26 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         await initAstarSearch(nodes, links, source, destination);
     }
 
+    useEffect(() => {
+        window.addEventListener("customEventName", (e) => {
+            console.log(e.detail.newValue, 'new value')
+            console.log(e.detail.oldValue, 'old value')
+
+            nodesAndLinks.nodes.map(node => {
+                if (node.id === e.detail.oldValue) {
+                    node.id = e.detail.newValue;
+                }
+            }
+            );
+            console.log(nodesAndLinks, 'nodes in controller-panel useEffect');
+        }
+        );
+
+        return () => {
+            window.removeEventListener("customEventName", console.log('event removed'));
+        };
+    }, []);
+
 
 
     const handleNofNodesAndLinks = () => {
@@ -108,10 +128,10 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                 if (node.hOfN !== null && node.hOfN !== undefined) {
                     //set error message
                     setError({ state: true, message: '' });
-                  } else {
+                } else {
                     // The node.hOfN doesn't have a value, do something here
                     console.log('noproblem');
-                  }                
+                }
             }
             return node;
         })
@@ -152,54 +172,54 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             {/* new state strats here */}
             {random ?
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between'}} className="my-5">
-                    <div className="">
-                        {/* <label htmlFor="noOfNodes" style={{ display: 'block' }}>No Of Nodes :</label> */}
-                        <input type="number" name="noOfNodes" onChange={
-                            (event) => {
-                                const newValue = parseInt(event.target.value);
-                                setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfNodes: newValue });
-                                if (newValue > 26) {
-                                    setError({ state: true, message: 'No of nodes should be less than 26' });
-                                    return;
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }} className="my-5">
+                        <div className="">
+                            {/* <label htmlFor="noOfNodes" style={{ display: 'block' }}>No Of Nodes :</label> */}
+                            <input type="number" name="noOfNodes" onChange={
+                                (event) => {
+                                    const newValue = parseInt(event.target.value);
+                                    setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfNodes: newValue });
+                                    if (newValue > 26) {
+                                        setError({ state: true, message: 'No of nodes should be less than 26' });
+                                        return;
+                                    }
+                                    if (newValue < noOfNodesAndLinks.noOfLinks) {
+                                        setError({ state: true, message: 'No of nodes should be greater than no of links' });
+                                        return;
+                                    }
+                                    if (newValue < 100 && newValue > noOfNodesAndLinks.noOfLinks) {
+                                        setError({ state: false, message: '' });
+                                        return;
+                                    }
+                                    //code to display error message when something other than number is entered
+                                    if (isNaN(newValue)) {
+                                        setError({ state: true, message: 'No of nodes should be a number' });
+                                        return;
+                                    }
                                 }
-                                if (newValue < noOfNodesAndLinks.noOfLinks) {
-                                    setError({ state: true, message: 'No of nodes should be greater than no of links' });
-                                    return;
+                            } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Node" id="noOfNodes" />
+                        </div>
+                        <div className=''>
+                            {/* <label htmlFor="noOfLinks" style={{ display: 'block' }}>No Of Links :</label> */}
+                            <input type="number" name="noOfLinks" onChange={
+                                (event) => {
+                                    const newValue = parseInt(event.target.value);
+                                    setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfLinks: newValue });
+                                    if (newValue > noOfNodesAndLinks.noOfNodes) {
+                                        setError({ state: true, message: 'No of links should be less than no of nodes' });
+                                        return;
+                                    }
+                                    if (newValue > 100) {
+                                        setError({ state: true, message: 'No of links should be less than 100' });
+                                        return;
+                                    }
+                                    if (newValue < 100 && newValue < noOfNodesAndLinks.noOfNodes) {
+                                        setError({ state: false, message: '' });
+                                        return;
+                                    }
                                 }
-                                if (newValue < 100 && newValue > noOfNodesAndLinks.noOfLinks) {
-                                    setError({ state: false, message: '' });
-                                    return;
-                                }
-                                //code to display error message when something other than number is entered
-                                if (isNaN(newValue)) {
-                                    setError({ state: true, message: 'No of nodes should be a number' });
-                                    return;
-                                }
-                            }
-                        } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Node" id="noOfNodes" />
-                    </div>
-                    <div className=''>
-                        {/* <label htmlFor="noOfLinks" style={{ display: 'block' }}>No Of Links :</label> */}
-                        <input type="number" name="noOfLinks" onChange={
-                            (event) => {
-                                const newValue = parseInt(event.target.value);
-                                setNoOfNodesAndLinks({ ...noOfNodesAndLinks, noOfLinks: newValue });
-                                if (newValue > noOfNodesAndLinks.noOfNodes) {
-                                    setError({ state: true, message: 'No of links should be less than no of nodes' });
-                                    return;
-                                }
-                                if (newValue > 100) {
-                                    setError({ state: true, message: 'No of links should be less than 100' });
-                                    return;
-                                }
-                                if (newValue < 100 && newValue < noOfNodesAndLinks.noOfNodes) {
-                                    setError({ state: false, message: '' });
-                                    return;
-                                }
-                            }
-                        } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Links" id="noOfLinks" />
-                    </div>
+                            } className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="No Of Links" id="noOfLinks" />
+                        </div>
                     </div>
                 </> : null}
 
@@ -218,17 +238,17 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             {/* Random state again begins here */}
             {random ?
                 <>
-                <div  style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div className="my-5">
-                        {/* <label htmlFor="source2" style={{ display: 'block' }}>Source Node :</label> */}
-                        <input type="text" onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source2" />
-                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="my-5">
+                            {/* <label htmlFor="source2" style={{ display: 'block' }}>Source Node :</label> */}
+                            <input type="text" onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source2" />
+                        </div>
 
-                    <div className="my-5">
-                        {/* <label htmlFor="destination2">Destination Node :</label> */}
-                        <input type="text" onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination2" />
+                        <div className="my-5">
+                            {/* <label htmlFor="destination2">Destination Node :</label> */}
+                            <input type="text" onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination2" />
+                        </div>
                     </div>
-                </div>    
 
                     <button className="btn btn-secondary" style={{ width: '50%' }} onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button></> : null}
 
@@ -269,7 +289,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                         onChange={(e) => {
                             setTargetNode(e.target.value);
                         }}></input> */}
-                    <select className="select select-bordered select-accent bg-white my-4" 
+                    <select className="select select-bordered select-accent bg-white my-4"
                         value={sourceNode}
                         onChange={(e) => {
                             setSourceNode(e.target.value);
@@ -290,20 +310,19 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                             <option key={node.id} value={node.id}>{node.id}</option>
                         ))}
                     </select>
-                    <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 " style={{width:'25%'}}
+                    <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 " style={{ width: '25%' }}
                         value={hofn}
                         onChange={(e) => {
-                            if(nodesAndLinks.nodes.find  (node => node.id === sourceNode&&node.hOfN!=parseInt(e.target.value)))         
-                            {                           
-                            setError({ state: true, message: 'If you change the h(n) value of the source node, you will change its original h(n) value. If you want to keep the original h(n) value, please enter the value that was previously assigned to it' });
+                            if (nodesAndLinks.nodes.find(node => node.id === sourceNode && node.hOfN != parseInt(e.target.value))) {
+                                setError({ state: true, message: 'If you change the h(n) value of the source node, you will change its original h(n) value. If you want to keep the original h(n) value, please enter the value that was previously assigned to it' });
                             }
-                            else{
+                            else {
                                 setError({ state: false, message: '' });
                             }
                             setHofn(parseInt(e.target.value));
                         }}></input>
                     <input type="number" placeholder="g(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
-                        style={{width:'25%'}}
+                        style={{ width: '25%' }}
                         value={gofn}
                         onChange={(e) => {
                             setGofn(parseInt(e.target.value));
@@ -312,7 +331,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
                 {/*Input for h(n) and g(n)*/}
                 <button className="btn btn-primary my-5" onClick={handleManualLink} style={{ width: '50%', fontWeight: 'bold' }}>Add Link</button>
-                <div style={{ display: "flex", justifyContent: 'space-between'}} className="my-5">
+                <div style={{ display: "flex", justifyContent: 'space-between' }} className="my-5">
                     <div>
                         <input type="text" value={source} onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source" />
                     </div>

@@ -22,6 +22,26 @@ export default function Playground() {
     }
     const [noOfNodesAndLinks, setNoOfNodesAndLinks] = useState({ noOfNodes: 0, noOfLinks: 0 });
 
+    useEffect(() => {
+        window.addEventListener("customEventName", (e) => {
+            console.log(e.detail.newValue, 'new value')
+            console.log(e.detail.oldValue, 'old value')
+
+            nodesAndLinks.nodes.map(node => {
+                if (node.id === e.detail.oldValue) {
+                    node.id = e.detail.newValue;
+                }
+            }
+            );
+            console.log(nodesAndLinks.nodes, 'nodes and links in playground');
+        }
+        );
+
+        return () => {
+            window.removeEventListener("customEventName", console.log('event removed'));
+        };
+    }, [nodesAndLinks]);
+
     return (
         <>
             <ControlPanel manual={manual} setManual={setManual} nodesAndLinks={nodesAndLinks} changeGraphType={changeGraphType} changeGraph={changeGraph} setNodesAndLinks={setNodesAndLinks} noOfNodesAndLinks={noOfNodesAndLinks} setNoOfNodesAndLinks={setNoOfNodesAndLinks}></ControlPanel>

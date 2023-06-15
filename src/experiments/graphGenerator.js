@@ -71,7 +71,7 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
             const newValue = parseInt(prompt("Enter new value for gOfN:"));
             if (newValue !== null) {
                 flagg = true;
-                console.log(noOfNodesAndLinks,'noOfNodesAndLinks')                //code to conver the newValue to a number
+                console.log(noOfNodesAndLinks,'noOfNodesAndLinks') //code to conver the newValue to a number
                 console.log(e.id, 'e.id in linkLabels');
                 console.log(e, 'e');
                 console.log(linksData, 'linksData in linkLabels');
@@ -110,6 +110,8 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
         .attr("r", radius);
 
     //appending id value to the node
+   
+    
     node.append("text")
         .text(d => d.id)
         .attr("text-anchor", "middle")
@@ -129,6 +131,10 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                     console.log(oldValue, 'oldValue');
                     if (nodesData[i].id == oldValue) {
                         nodesData[i].id = newValue;
+                        const customEvent = new CustomEvent("customEventName", {
+                            detail: { newValue: newValue , oldValue: oldValue},
+                          });
+                        window.dispatchEvent(customEvent);
                     }
                 }
             }
