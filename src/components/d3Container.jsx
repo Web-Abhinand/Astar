@@ -22,6 +22,11 @@ const ForceGraph = ({ nodesAndLinks, graphType, manual, setManual, noOfNodesAndL
             );
         }
         console.log(nodesAndLinks, "nodesAndLinks");
+
+
+
+        
+
     }, [nodesAndLinks, nodesAndLinks.links]);
 
     console.log(nodesAndLinks, "nodesAndLinks");

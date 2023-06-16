@@ -90,6 +90,38 @@ export const generateUndirectedNodesAndLinks = function (noOfNodes, noOfLinks, s
     }
     return { nodes, links };
 }
+export const generateUndirectedNodesAndLinksManual = function (noOfNodes, noOfLinks, sourceNode, targetNode) {
+    let nodes = [];
+    let links = [];
+    for (let i = 0; i < noOfNodes; i++) {
+        const c = String.fromCharCode(alphaarray[Math.floor(Math.random() * alphaarray.length)]);
+
+
+        if (nodes.find(node => node.id === c)) {
+            i--;
+            continue;
+        }
+
+        nodes.push({ id: c, hOfN: Math.floor(Math.random() * 0) + 0 });
+    }
+
+    for (let i = 0; i < noOfLinks; i++) {
+        const source = nodes[Math.floor(Math.random() * nodes.length)].id;
+        const target = nodes[Math.floor(Math.random() * nodes.length)].id;
+
+        // check if the relation exist
+        if (source === target || links.find(link => (link.source === source && link.target === target) || (link.source === target && link.target === source))) {
+            i--;
+            continue;
+        }
+        //code to make the graph undirected eg: if a->b exists then b->a also exists         
+        const value = Math.floor(Math.random() * 10) + 1;
+        const gOfN = Math.floor(Math.random() * 10) + 1;
+        links.push({ source, target, value: value, gOfN: gOfN });
+        links.push({ source: target, target: source, value: value, gOfN: gOfN });
+    }
+    return { nodes, links };
+}
 
 
 const visitedNode = new Set()
@@ -251,7 +283,6 @@ async function astarSearch(nodes, links, startNode, endNode) {
         if (links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current)) {
             links.find(link => link.source.id === closedList[closedList.length - 1] && link.target.id === current).selected = true;
         }
-
 
         await new Promise(r => setTimeout(r, speed));
         updatefeedBack("lowest fscore node : <p class='highlighted'>" + current + "</p>" + " with fscore : <p class='highlighted'>" + lowest + "</p>")
