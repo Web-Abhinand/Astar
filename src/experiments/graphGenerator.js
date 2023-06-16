@@ -46,7 +46,6 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
             svg.attr("transform", d3.event.transform);
         }));
 
-
     const linkGroup = svg.append("g")
         .attr("class", "links")
         .selectAll("g")
