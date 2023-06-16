@@ -121,8 +121,10 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
         .on("click", function (d, e) {
             const oldValue = e.id;
             console.log(oldValue, 'oldValue');
-            const newValue = prompt("Enter new value for id:");
-            if (newValue !== null) {
+            let newValue = prompt("Enter new value for id:");
+            //code to make newValue a uppercase letter
+            newValue = newValue.toUpperCase();
+            if (newValue !== null&&!nodesData.find(d => d.id === newValue)) {
                 d.id = newValue;
                 d3.select(this).text(newValue);
                 idValue = newValue;
@@ -137,6 +139,9 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                         window.dispatchEvent(customEvent);
                     }
                 }
+            }
+            else{
+                alert("Id is already used");
             }
         });
 
