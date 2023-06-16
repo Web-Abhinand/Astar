@@ -2,12 +2,12 @@ import { initAstarSearch } from "../experiments/astarSearch";
 import { useState, useEffect } from "react";
 
 
-export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks }) {
+export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks,changeManualGraph}) {
 
     const [targetNode, setTargetNode] = useState('');
     const [sourceNode, setSourceNode] = useState('');
-    const [hofn, setHofn] = useState();
-    const [gofn, setGofn] = useState();
+    const [hofn, setHofn] = useState(0);
+    const [gofn, setGofn] = useState(0);
     const [manualNOofNodes, setManualNOofNodes] = useState(1);
     const [source, setSource] = useState('');
     const [destination, setDestination] = useState('');
@@ -47,24 +47,31 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
     }
 
     useEffect(() => {
-        window.addEventListener("customEventName", (e) => {
-            console.log(e.detail.newValue, 'new value')
-            console.log(e.detail.oldValue, 'old value')
+        const handleCustomEvent = (e) => {
+            console.log(e.detail.newValue, 'new value');
+            console.log(e.detail.oldValue, 'old value');
 
-            nodesAndLinks.nodes.map(node => {
+            const updatedNodesAndLinks = { ...nodesAndLinks };
+
+            updatedNodesAndLinks.nodes = updatedNodesAndLinks.nodes.map(node => {
                 if (node.id === e.detail.oldValue) {
-                    node.id = e.detail.newValue;
+                    return { ...node, id: e.detail.newValue };
                 }
-            }
-            );
-            console.log(nodesAndLinks, 'nodes in controller-panel useEffect');
-        }
-        );
+                return node;
+            });
+
+            console.log(updatedNodesAndLinks, 'nodes and links in playground');
+
+            setNodesAndLinks(updatedNodesAndLinks);
+        };
+
+        window.addEventListener("customEventName", handleCustomEvent);
 
         return () => {
-            window.removeEventListener("customEventName", console.log('event removed'));
+            window.removeEventListener("customEventName", handleCustomEvent);
         };
-    }, []);
+    }, [nodesAndLinks]);
+
 
 
 
@@ -91,9 +98,9 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
     }
     function handleManualGraph() {
         setManual(true);
-        changeGraph(manualNOofNodes, 0);
+        changeManualGraph(manualNOofNodes, 0);
         console.log('change graph called');
-        console.log(nodesAndLinks.nodes, "nodes and links in controller panel");
+        console.log(nodesAndLinks.nodes, "nodes in controller panel");
         setRandom(false);
     }
 
@@ -116,11 +123,8 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
         }
         setError({ state: false, message: '' });
 
-
         let nodes = nodesAndLinks.nodes;
         let links = nodesAndLinks.links;
-        console.log(nodes, "nodes in contrller panel");
-        console.log(links, "links in contrller panel");
         //insert hofn value to the node
         nodes = nodes.map(node => {
             if (node.id === sourceNode) {
