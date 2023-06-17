@@ -74,8 +74,8 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                 console.log(e, 'e');
                 console.log(linksData, 'linksData in linkLabels');
                 d3.select(this).text(newValue);
-                exportedValue = newValue; 
-                console.log(d.gOfN, 'gOfN');
+                // exportedValue = newValue; 
+                console.log(newValue, 'gOfN');
             }
 
             for (let i = 0; i < linksData.length; i++) {
@@ -89,6 +89,8 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                 }
             }
             console.log(linksData, 'linksData after update');
+            const event = new CustomEvent('gOfNUpdate', { detail: {newValue,linksData,nodesData}});
+            window.dispatchEvent(event);
         });
 
     console.log(linksData, 'linksData');
@@ -131,7 +133,7 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                     console.log(oldValue, 'oldValue');
                     if (nodesData[i].id == oldValue) {
                         nodesData[i].id = newValue;
-                        const customEvent = new CustomEvent("customEventName", {
+                        const customEvent = new CustomEvent("updateIdOnClick", {
                             detail: { newValue: newValue , oldValue: oldValue},
                           });
                         window.dispatchEvent(customEvent);
@@ -174,6 +176,8 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                 d3.select(this).text(newValue);
                 hOfNValue = newValue; // Store the value in the exported variable
                 newValue = parseInt(newValue);
+                const event = new CustomEvent('hOfNUpdate', { detail: newValue });
+                window.dispatchEvent(event);
             }
             //code to update the hOfN value in the nodesData array
             for (let i = 0; i < nodesData.length; i++) {
@@ -205,9 +209,6 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
 
     simulation.on("tick", () => {
         simulation.alpha(0.5);
-
-
-
         link
             .attr("x1", function (d) { return d.source.x; })
             .attr("y1", function (d) { return d.source.y; })

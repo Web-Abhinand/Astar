@@ -2,7 +2,7 @@ import { initAstarSearch } from "../experiments/astarSearch";
 import { useState, useEffect } from "react";
 
 
-export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks,changeManualGraph}) {
+export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGraphType, manual, setManual, setNodesAndLinks, changeManualGraph }) {
 
     const [targetNode, setTargetNode] = useState('');
     const [sourceNode, setSourceNode] = useState('');
@@ -65,15 +65,46 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             setNodesAndLinks(updatedNodesAndLinks);
         };
 
-        window.addEventListener("customEventName", handleCustomEvent);
+        window.addEventListener("updateIdOnClick", handleCustomEvent);
 
         return () => {
-            window.removeEventListener("customEventName", handleCustomEvent);
+            window.removeEventListener("updateIdOnClick", handleCustomEvent);
         };
-    }, [nodesAndLinks]);
+    }, []);
 
 
+    useEffect(() => {
+        const handleHOfNUpdate = (e) => {
+            const newHOfNValue = e.detail;
+            console.log(newHOfNValue);
+        };
 
+        window.addEventListener('hOfNUpdate', handleHOfNUpdate);
+
+        return () => {
+            window.removeEventListener('hOfNUpdate', handleHOfNUpdate);
+        };
+    }, []);
+
+
+    useEffect(() => {
+        const handleGOfNUpdate = (e) => {
+            const { newValue, linksData,nodesData } = e.detail;
+            // Handle the newValue and linksData in your component logic
+            console.log(newValue);
+            console.log(linksData);
+            console.log(nodesData);
+            const updatedNodesAndLinks = { ...nodesAndLinks };
+            updatedNodesAndLinks.nodes = nodesData;
+            updatedNodesAndLinks.links = linksData;
+            setNodesAndLinks(updatedNodesAndLinks);
+            console.log(nodesAndLinks, "nodes and links in controller panel useEffect");
+        };
+        window.addEventListener('gOfNUpdate', handleGOfNUpdate);
+        return () => {
+            window.removeEventListener('gOfNUpdate', handleGOfNUpdate);
+        };
+    }, []);
 
     const handleNofNodesAndLinks = () => {
 

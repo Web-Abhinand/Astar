@@ -21,15 +21,10 @@ const ForceGraph = ({ nodesAndLinks, graphType, manual, setManual, noOfNodesAndL
                 }
             );
         }
-        console.log(nodesAndLinks, "nodesAndLinks");
-
-
-
-        
-
-    }, [nodesAndLinks, nodesAndLinks.links]);
+    }, [nodesAndLinks]);
 
     console.log(nodesAndLinks, "nodesAndLinks");
+    //make necessary changes to the graph here
     console.log(containerRef.current, "containerRef.current");
     return (
         <>
