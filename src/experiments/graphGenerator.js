@@ -134,7 +134,7 @@ export const runForceGraph = (container, linksData, nodesData, noOfNodesAndLinks
                     if (nodesData[i].id == oldValue) {
                         nodesData[i].id = newValue;
                         const customEvent = new CustomEvent("updateIdOnClick", {
-                            detail: { newValue: newValue , oldValue: oldValue},
+                            detail: { newValue: newValue , oldValue: oldValue, nodesData: nodesData, linksData: linksData},
                           });
                         window.dispatchEvent(customEvent);
                     }

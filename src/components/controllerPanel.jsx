@@ -48,25 +48,16 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
     useEffect(() => {
         const handleCustomEvent = (e) => {
+            const { newValue, linksData,nodesData } = e.detail;
             console.log(e.detail.newValue, 'new value');
             console.log(e.detail.oldValue, 'old value');
-
             const updatedNodesAndLinks = { ...nodesAndLinks };
-
-            updatedNodesAndLinks.nodes = updatedNodesAndLinks.nodes.map(node => {
-                if (node.id === e.detail.oldValue) {
-                    return { ...node, id: e.detail.newValue };
-                }
-                return node;
-            });
-
+            updatedNodesAndLinks.nodes = nodesData;
+            updatedNodesAndLinks.links = linksData;
             console.log(updatedNodesAndLinks, 'nodes and links in playground');
-
             setNodesAndLinks(updatedNodesAndLinks);
         };
-
         window.addEventListener("updateIdOnClick", handleCustomEvent);
-
         return () => {
             window.removeEventListener("updateIdOnClick", handleCustomEvent);
         };
@@ -78,9 +69,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
             const newHOfNValue = e.detail;
             console.log(newHOfNValue);
         };
-
         window.addEventListener('hOfNUpdate', handleHOfNUpdate);
-
         return () => {
             window.removeEventListener('hOfNUpdate', handleHOfNUpdate);
         };
@@ -300,7 +289,6 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
 
             {manual ? <>
                 <div className="my-5" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <label style={{ display: 'block' }} className="my-2">No of nodes :</label>
                     <input type="number" placeholder="No of nodes" className="input input-bordered input-accent bg-white placeholder-gray-800"
                         value={manualNOofNodes}
                         onChange={
@@ -308,22 +296,12 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                                 setManualNOofNodes(e.target.value);
                             }
                         }></input>
-                    <button className="btn btn-primary w-full" onClick={handleManualGraph} style={{ width: '50%', fontWeight: 'bold' }}>Add Custom Nodes</button>
+                    <button className="btn btn-primary" onClick={handleManualGraph} style={{  fontWeight: 'bold' }}>Add Custom Nodes</button>
                 </div>
                 {/* button */}
 
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {/* <input type="text" placeholder="Source" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
-                        value={sourceNode}
-                        onChange={(e) => {
-                            setSourceNode(e.target.value);
-                        }}></input>
-                        <input type="text" placeholder="Target" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 "
-                        value={targetNode}
-                        onChange={(e) => {
-                            setTargetNode(e.target.value);
-                        }}></input> */}
                     <select className="select select-bordered select-accent bg-white my-4"
                         value={sourceNode}
                         onChange={(e) => {
@@ -345,7 +323,7 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                             <option key={node.id} value={node.id}>{node.id}</option>
                         ))}
                     </select>
-                    <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 " style={{ width: '25%' }}
+                    {/* <input type="number" placeholder="h(n)" className="input input-bordered input-accent bg-white placeholder-gray-800 my-4 " style={{ width: '25%' }}
                         value={hofn}
                         onChange={(e) => {
                             if (nodesAndLinks.nodes.find(node => node.id === sourceNode && node.hOfN != parseInt(e.target.value))) {
@@ -361,22 +339,21 @@ export default function ControllerPanel({ changeGraph, nodesAndLinks, changeGrap
                         value={gofn}
                         onChange={(e) => {
                             setGofn(parseInt(e.target.value));
-                        }}></input>
+                        }}></input> */}
                 </div>
 
                 {/*Input for h(n) and g(n)*/}
                 <button className="btn btn-primary my-5" onClick={handleManualLink} style={{ width: '50%', fontWeight: 'bold' }}>Add Link</button>
                 <div style={{ display: "flex", justifyContent: 'space-between' }} className="my-5">
-                    <div>
-                        <input type="text" value={source} onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source" />
+                    <div style={{display: "flex"}}>
+                        <input type="text" value={source} onChange={handleSourceChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Source Node" id="source"  style={{minWidth:'50px'}}/>
                     </div>
 
                     <div>
-                        <input type="text" value={destination} onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination" />
+                        <input type="text" value={destination} onChange={handleDestinationChange} className="input input-bordered input-accent bg-white placeholder-gray-800" placeholder="Destination Node" id="destination" style={{minWidth:'50px'}}/>
                     </div>
-                    <button className="btn btn-secondary" style={{ width: '30%' }} onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button>
                 </div>
-
+                <button className="btn btn-secondary" onClick={() => startSearch(nodesAndLinks.nodes, nodesAndLinks.links, source, destination)}>Find Path</button>
             </> : null}
             {
                 error.state ? <div className="text-red-500 w-full">

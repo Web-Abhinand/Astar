@@ -198,12 +198,10 @@ async function astarSearch(nodes, links, startNode, endNode) {
             return
         }
 
-
         //step 4
         console.log(nodes, "nodes")
         neighbours = links.filter(link => link.source.id == current)
         console.log(neighbours, "neighbours");
-
 
         //step 5
         if (neighbours.find(neighbour => neighbour.target.id == endNode)) {
@@ -232,19 +230,14 @@ async function astarSearch(nodes, links, startNode, endNode) {
             }
             return true;
         }
-        if(checkElementsPresent(neighbours, closedList)){
-            // code to change the color of the link between closed list
-
-            // for (let i = 0; i < closedList.length-1; i++) {
-            //     links.find(link => link.source.id === closedList[i] && link.target.id == closedList[i + 1]).selected = false;
-            //     console.log(closedList[i], 'closedList[i]');
-            // }
-
-           
-           console.log("All elements of neighbors are present in closedList");
-            current = openList[0];
+        if (checkElementsPresent(neighbours, closedList)) {
+            console.log("All elements of neighbors are present in closedList");
+            console.log(closedList, "closedList in step 5")
+            current = openList[openList.length - 1];
+            console.log(current, "current in step 5")
+            console.log(openList, "openList in step 5")
         }
-        else{
+        else {
             console.log("Not all elements of neighbors are present in closedList")
         }
 
@@ -261,7 +254,6 @@ async function astarSearch(nodes, links, startNode, endNode) {
                 if (!openList.includes(neighbours[i].target.id) && !closedList.includes(neighbours[i].target.id)) {
                     openList.push(neighbours[i].target.id);
                 }
-
             }
         }
 
