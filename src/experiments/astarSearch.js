@@ -1,3 +1,5 @@
+import { link } from 'd3';
+import { removeItem } from 'localforage';
 import { getExportedValue } from './graphGenerator.js';
 import { idValue } from './graphGenerator.js';
 import { hOfNValue } from './graphGenerator.js';
@@ -234,8 +236,15 @@ async function astarSearch(nodes, links, startNode, endNode) {
             console.log("All elements of neighbors are present in closedList");
             console.log(closedList, "closedList in step 5")
             current = openList[openList.length - 1];
-            console.log(current, "current in step 5")
-            console.log(openList, "openList in step 5")
+            let k=links.find(link=>link.source.id===current && closedList.includes(link.target.id))
+            let entry_point=k.target.id
+            console.log(entry_point,"entry_point")
+            //code to change the color of the link between current and entry point
+            links.find(link => link.source.id === current && link.target.id === entry_point).selected = true;
+            // links.find(link=>link.source.id===closedList[closedList.length-1] && link.target.id===entry_point).selected=false;
+            // links.find(link=>link.target.id===closedList[closedList.length-1] && link.source.id===entry_point).selected=false;
+
+            console.log(current, "current in step 5");
         }
         else {
             console.log("Not all elements of neighbors are present in closedList")
@@ -259,7 +268,6 @@ async function astarSearch(nodes, links, startNode, endNode) {
 
         await new Promise(r => setTimeout(r, speed));
         updatefeedBack("fscore of all the nodes : <p class='highlighted'>" + Array.from(fscore) + "</p>")
-
 
         //find the minimum value of fscore and set it as current
         let lowest = -1;
