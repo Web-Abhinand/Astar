@@ -236,6 +236,7 @@ async function astarSearch(nodes, links, startNode, endNode) {
             current = openList[openList.length - 1];
             console.log(current, "current in step 5")
             console.log(openList, "openList in step 5")
+
         }
         else {
             console.log("Not all elements of neighbors are present in closedList")
